@@ -4,7 +4,7 @@ C library (for **Z88DK**) for VTI graphics board for S100 computers (IMSAI, Alta
 
 ## VTI (Video Terminal Interface)
 
-VTI is a S100 "graphics" board, made for "Poly88" system. In this video it's working on an IMSAI 8080.
+VTI is a S100 "graphics" board, made for "Poly88" system, but it works also with other S100 machines like Altair 8800, IMSAI 8080, ...
 
 Here is the board description: http://www.s100computers.com/Hardware%20Folder/PolyMorphic/Video%20Board/Video%20Board.htm
 
