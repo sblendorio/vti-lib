@@ -43,7 +43,7 @@ The parameter **mode** represents the way the dot is drawn, and can have the fol
 * **1 = DRAW**. It draws the dot, making it *white*.
 * **2 = XOR**. It draws the dot if it's currently off (=black), and erases it if it's currently on (=white)
 
-## List of library's function
+## List of library's functions
 
 * vti_set_start(*\<start address\>*)
 * vti_print_at(*\<x\>*, *\<y\>*, *"string"*);
