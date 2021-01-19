@@ -42,7 +42,6 @@ void main(int argc, char *argv[]) {
     m=0;
     for (k=0; k<5; ++k) {
         m = 1-m;
-        // SBLEND vti_boxfill(m, k, k+5, k+30, k+20);
         vti_boxfill(m, k, k+5, k+20, k+15);
     }
     vti_print_at(0, 14, "- PRESS A KEY TO CONTINUE -");
