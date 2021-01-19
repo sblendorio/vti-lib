@@ -36,7 +36,7 @@ Main function of the library is `vti_plot` which has the following prototype:
 
     void vti_plot(char mode, int x, int y);
 
-...where **x** and **y** are cartesian coordinates with (0,0) as origin and max values equal to (127,47).
+...where **x** and **y** are cartesian coordinates with (0,0) as top-left origin and max values equal to (127,47).
 The parameter **mode** represents the way the dot is drawn, and can have the following values:
 
 * **0 = ERASE**. It erases the dot at specified coordinates, making it *black*.
