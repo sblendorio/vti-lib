@@ -83,4 +83,4 @@ This will make the demo use $E800 as start address for the graphics card.
 ## Credits
 Thanks to:
 - [**Alois Zingl**](http://members.chello.at/~easyfilter/bresenham.html) for implementation of Bresenham's Algorithms (lines and curves drawing)
-
+- [**Andrea Matteucci**](https://www.facebook.com/andrewmattew81/) for hardware providing and fixing
