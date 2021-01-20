@@ -69,6 +69,23 @@ void main(int argc, char *argv[]) {
     vti_clear_screen();
 
     // *************************************************************************
+    vti_clear_screen();
+    vti_print_at(0, 0, "And a diamond");
+    for(i=0; i<64; i+=5) {
+        vti_line(1, 64,  0, 64+i, 24);
+        vti_line(1, 64,  0, 64-i, 24);
+        vti_line(1, 64, 47, 64+i, 24);
+        vti_line(1, 64, 47, 64-i, 24);
+    }
+    vti_print_at(0, 15, "- PRESS A KEY TO CONTINUE -");
+    get_key();
+    for (i=0; i<16; ++i) {
+        vti_scroll_down(1);
+        csleep(5);
+    }
+    vti_clear_screen();
+
+    // *************************************************************************
     vti_print_at(0, 0, "Let's test XOR mode");
     vti_ellipse_rect(1, 7, 7, 40, 25);
     for (k=0; k<2; ++k) vti_boxfill(2, 5, 5, 42, 27);
