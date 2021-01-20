@@ -6,10 +6,13 @@ char get_key(void);
 void main(int argc, char *argv[]) {
     int i,j,k,m;
     char ch;
+    unsigned int base_address;
 
-    // use a dummy argument to set E800 as start address
+    // use a numeric argument to set the video memory start address
     if (argc >= 2) {
-        vti_set_start(0xe800);
+        base_address = (unsigned int) atoi(argv[1]);
+        if(base_address == 0) base_address = 0xe800;
+        vti_set_start(base_address);
     }
 
     printf("Starting program...\n");
@@ -58,6 +61,23 @@ void main(int argc, char *argv[]) {
     vti_line(1, 5, 5, 60, 37);
     vti_ellipse_rect(1, 7, 7, 58, 35);
     vti_print_at(0, 14, "- PRESS A KEY TO CONTINUE -");
+    get_key();
+    for (i=0; i<16; ++i) {
+        vti_scroll_down(1);
+        csleep(5);
+    }
+    vti_clear_screen();
+
+    // *************************************************************************
+    vti_clear_screen();
+    vti_print_at(0, 0, "And a diamond");
+    for(i=0; i<64; i+=5) {
+        vti_line(1, 64,  0, 64+i, 24);
+        vti_line(1, 64,  0, 64-i, 24);
+        vti_line(1, 64, 47, 64+i, 24);
+        vti_line(1, 64, 47, 64-i, 24);
+    }
+    vti_print_at(0, 15, "- PRESS A KEY TO CONTINUE -");
     get_key();
     for (i=0; i<16; ++i) {
         vti_scroll_down(1);
