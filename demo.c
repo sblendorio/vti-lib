@@ -6,10 +6,13 @@ char get_key(void);
 void main(int argc, char *argv[]) {
     int i,j,k,m;
     char ch;
+    unsigned int base_address;
 
-    // use a dummy argument to set E800 as start address
+    // use a numeric argument to set the video memory start address
     if (argc >= 2) {
-        vti_set_start(0xe800);
+        base_address = (unsigned int) atoi(argv[1]);
+        if(base_address == 0) base_address = 0xe800;
+        vti_set_start(base_address);
     }
 
     printf("Starting program...\n");

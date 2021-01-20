@@ -70,11 +70,11 @@ There is a **build.bat** file which does all the work with **Z88DK**, which is s
 
 ## Launching demo
 
-By default, the start address is **$F800**. To use a alternatively **$E800**, use a dummy parameter:
+By default, the start address is **$F800**. To use another address, pass it as argument in decimal notation:
 
-```$ demo -a```
+```$ demo 59392```
 
-This will make the demo use $E800 as start address for the graphics card.
+This will make the demo use $E800 (59392) as start address for the graphics card.
 
 ## Runnning demo in a video
 
