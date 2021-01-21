@@ -2,7 +2,7 @@
 #include <string.h>
 
 unsigned char *vti_start = (unsigned char *) 0xf800;
-static unsigned char pow[] = {1, 2, 4, 8, 16, 32};
+static unsigned char pow[] = {32, 16, 8, 4, 2, 1};
 
 int absolute(int x);
 
@@ -41,7 +41,7 @@ void vti_plot(char mode, int x, int y) {
     gy = y / 3;
     sx = x % 2;
     sy = y % 3;
-    mask = pow[5 - 3*sx - sy];
+    mask = pow[3*sx + sy];
     addr = vti_start + gx + (64*gy);
 
     value = *addr;
@@ -135,7 +135,7 @@ char vti_read_pixel(int x, int y) {
     
     value = *(vti_start + gx + (64*gy));
     if (value & 0x80) value = 0x3f;
-    return ~value & pow[5 - 3*sx - sy] ? 1 : 0;
+    return ~value & pow[3*sx + sy] ? 1 : 0;
 }
 
 unsigned char vti_read_char(int x, int y) {
