@@ -17,8 +17,8 @@ void vti_set_start(unsigned int start) {
 void vti_print_at(int x, int y, unsigned char *msg) {
 	unsigned char *addr = vti_start + x + (64*y);
 	while(*msg) {
-        *addr++ = *msg++ | 0x80;   // bit 7 on: ASCII TEXT
-    }
+		*addr++ = *msg++ | 0x80;   // bit 7 on: ASCII TEXT
+	}
 }
 
 void vti_rawchar_at(int x, int y, char ch) {
