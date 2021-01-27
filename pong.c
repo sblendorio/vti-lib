@@ -236,7 +236,7 @@ void intro_screen(void) {
     vti_center_at(5, "Left Player              Right Player");
     vti_center_at(7, "       Up Q              P Up        ");
     vti_center_at(8, "     Down A              L Down      ");
-    vti_center_at(12,"Use . to EXIT");
+    vti_center_at(12,"Use +/- to change speed, \".\" to EXIT");
     vti_center_at(14, "PRESS A KEY TO START");
     do {
         sprintf(buf, " Slow down: %d ", speed);
