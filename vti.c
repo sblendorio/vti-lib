@@ -5,13 +5,36 @@ unsigned char *vti_start = (unsigned char *) 0xf800;
 static unsigned char pow[] = {32, 16, 8, 4, 2, 1};
 
 int absolute(int x);
+void vti_set_keyboard_port(int port);
 
 int absolute(int x) {
     return x < 0 ? -x : x;
 }
 
+void vti_set_keyboard_port(int port) __z88dk_fastcall {
+#asm
+    ld a,l
+    ld (portsmc+1),a
+#endasm
+}
+
+unsigned char vti_read_keyboard() __z88dk_fastcall {
+#asm
+portsmc:
+    in a,(0xf8)
+    ld l,a
+    ld h,0
+#endasm
+}
+
+unsigned char vti_keypressed() {
+    return vti_read_keyboard() & 0x80;
+}
+
+
 void vti_set_start(unsigned int start) {
     vti_start = (unsigned char *) start;
+    vti_set_keyboard_port(start >> 8);
 }
 
 void vti_print_at(int x, int y, unsigned char *msg) {
@@ -19,6 +42,10 @@ void vti_print_at(int x, int y, unsigned char *msg) {
 	while(*msg) {
 		*addr++ = *msg++ | 0x80;   // bit 7 on: ASCII TEXT
 	}
+}
+
+void vti_center_at(int y, unsigned char *msg) {
+    vti_print_at((64-strlen(msg))/2, y, msg);
 }
 
 void vti_rawchar_at(int x, int y, char ch) {
@@ -149,12 +176,12 @@ void vti_scroll_down(int n) {
     memset(vti_start, 0xa0, 0x40 * n);
 }
 
-void vti_put_shape(int x, int y, char **shape, int w, int h) {
+void vti_put_shape(int x, int y, char *shape, int w, int h) {
     unsigned int ih, iw;
     char ch;
     for (ih = 0; ih < h; ++ih) {
         for (iw = 0; iw < w; ++iw) {
-            ch = *(*(shape+ih)+iw);
+            ch = *shape++;
             if (ch == '*' || ch =='.') vti_plot(ch == '*' ? 1 : 0, x+iw, y+ih);
         }
     }
