@@ -78,6 +78,7 @@ void vti_plot(unsigned char mode, unsigned int x, unsigned int y) {
     static unsigned char *addr;
     static unsigned int gx;
     static unsigned char sx, sy, mask, value;
+
     if (x > 127 || y > 47) return;
     gx = x / 2;
     sx = x % 2;
@@ -110,8 +111,8 @@ unsigned char vti_read_pixel(unsigned int x, unsigned int y) {
     return ~value & mask ? 1 : 0;
 }
 
-    static int i;
 void vti_box(unsigned char mode, unsigned int x0, unsigned int y0, unsigned int x1, unsigned int y1) {
+    static unsigned int i;
     for (i=x0; i<=x1; ++i) {
         vti_plot(mode, i, y0);
         vti_plot(mode, i, y1);
@@ -122,8 +123,8 @@ void vti_box(unsigned char mode, unsigned int x0, unsigned int y0, unsigned int 
     }
 }
 
-    static int i,j;
 void vti_boxfill(unsigned char mode, unsigned int x0, unsigned int y0, unsigned int x1, unsigned int y1) {
+    static unsigned int i,j;
     for (i=x0; i<=x1; ++i)
         for (j=y0; j<=y1; ++j)
             vti_plot(mode, i, j);
