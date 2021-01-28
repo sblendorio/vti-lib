@@ -2,7 +2,27 @@
 #include <string.h>
 
 unsigned char *vti_start = (unsigned char *) 0xf800;
-static unsigned char pow[] = {32, 16, 8, 4, 2, 1};
+static unsigned char pow0[] = {32, 16, 8};
+static unsigned char pow1[] = {4,  2,  1};
+
+// precalculated table with address of row Y
+static unsigned int vti_row[48] = {
+    0,   0,   0,  64,  64,  64, 128, 128, 128,
+  192, 192, 192, 256, 256, 256, 320, 320, 320,
+  384, 384, 384, 448, 448, 448, 512, 512, 512,
+  576, 576, 576, 640, 640, 640, 704, 704, 704,
+  768, 768, 768, 832, 832, 832, 896, 896, 896,
+  960, 960, 960
+};
+
+// precalculated table with Y % 3
+static unsigned int vti_mod[48] = {
+  0, 1, 2, 0, 1, 2, 0, 1, 2, 0, 1,
+  2, 0, 1, 2, 0, 1, 2, 0, 1, 2, 0,
+  1, 2, 0, 1, 2, 0, 1, 2, 0, 1, 2,
+  0, 1, 2, 0, 1, 2, 0, 1, 2, 0, 1,
+  2, 0, 1, 2
+};
 
 int absolute(int x);
 
@@ -30,7 +50,6 @@ unsigned char vti_keypressed(void) {
     return vti_read_keyboard() & 0x80;
 }
 
-
 void vti_set_start(unsigned int start) {
     vti_start = (unsigned char *) start;
     vti_set_keyboard_port(start >> 8);
@@ -55,6 +74,7 @@ void vti_clear_screen(void) {
     memset(vti_start, 0xa0, 0x400);
 }
 
+/*
 void vti_plot(char mode, int x, int y) {
     static unsigned char *addr;
     static int gx, gy;
@@ -78,6 +98,60 @@ void vti_plot(char mode, int x, int y) {
         : // mode = 2 -> XOR mode
             (~value & mask ? value | mask : value & (~mask));
 }
+*/
+
+void vti_plot(char mode, unsigned int x, unsigned int y) {
+    static unsigned char *addr;
+    static unsigned int gx;
+    static unsigned char sx, sy, mask, value;
+    if (x > 127 || y > 47) return;
+    gx = x / 2;
+    sx = x % 2;
+    sy = vti_mod[y];
+    mask = sx == 0 ? pow0[sy] : pow1[sy];
+    addr = vti_start + gx + vti_row[y];
+
+    value = *addr;
+    if (value & 0x80) value = 0x3f;
+
+    *addr =
+          mode == 1 ?
+            value & (~mask)
+        : mode == 0 ?
+            value | mask
+        : // mode = 2 -> XOR mode
+            (~value & mask ? value | mask : value & (~mask));
+}
+
+char vti_read_pixel(unsigned int x, unsigned int y) {
+    static unsigned int gx;
+    static unsigned char sx, sy, mask, value;
+    if (x > 127 || y > 47) return 0;
+    gx = x / 2;
+    sx = x % 2;
+    sy = vti_mod[y];
+    mask = sx == 0 ? pow0[sy] : pow1[sy];
+    value = *(vti_start + gx + vti_row[y]);
+    if (value & 0x80) value = 0x3f;
+    return ~value & mask ? 1 : 0;
+}
+
+/*
+char vti_read_pixel(int x, int y) {
+    static unsigned char *addr;
+    static int gx, gy;
+    static unsigned char sx, sy, value;
+    if (x > 127 || y > 47) return 0;
+    gx = x / 2;
+    gy = y / 3;
+    sx = x % 2;
+    sy = y % 3;
+
+    value = *(vti_start + gx + (64*gy));
+    if (value & 0x80) value = 0x3f;
+    return ~value & pow[3*sx + sy] ? 1 : 0;
+}
+*/
 
 void vti_box(char mode, int x0, int y0, int x1, int y1) {
     static int i;
@@ -144,21 +218,6 @@ void vti_ellipse_rect(char mode, int x0, int y0, int x1, int y1)
        vti_plot(mode, x0-1, y1);
        vti_plot(mode, x1+1, y1--); 
    }
-}
-
-char vti_read_pixel(int x, int y) {
-    static unsigned char *addr;
-    static int gx, gy;
-    static unsigned char sx, sy, value;
-    if (x > 127 || y > 47) return 0;
-    gx = x / 2;
-    gy = y / 3;
-    sx = x % 2;
-    sy = y % 3;
-    
-    value = *(vti_start + gx + (64*gy));
-    if (value & 0x80) value = 0x3f;
-    return ~value & pow[3*sx + sy] ? 1 : 0;
 }
 
 unsigned char vti_read_char(int x, int y) {
