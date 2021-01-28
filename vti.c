@@ -74,32 +74,6 @@ void vti_clear_screen(void) {
     memset(vti_start, 0xa0, 0x400);
 }
 
-/*
-void vti_plot(char mode, int x, int y) {
-    static unsigned char *addr;
-    static int gx, gy;
-    static unsigned char sx, sy, mask, value;
-    if (x > 127 || y > 47) return;
-    gx = x / 2;
-    gy = y / 3;
-    sx = x % 2;
-    sy = y % 3;
-    mask = pow[3*sx + sy];
-    addr = vti_start + gx + (64*gy);
-
-    value = *addr;
-    if (value & 0x80) value = 0x3f;
-
-    *addr =
-          mode == 1 ?
-            value & (~mask)
-        : mode == 0 ?
-            value | mask
-        : // mode = 2 -> XOR mode
-            (~value & mask ? value | mask : value & (~mask));
-}
-*/
-
 void vti_plot(char mode, unsigned int x, unsigned int y) {
     static unsigned char *addr;
     static unsigned int gx;
@@ -135,23 +109,6 @@ char vti_read_pixel(unsigned int x, unsigned int y) {
     if (value & 0x80) value = 0x3f;
     return ~value & mask ? 1 : 0;
 }
-
-/*
-char vti_read_pixel(int x, int y) {
-    static unsigned char *addr;
-    static int gx, gy;
-    static unsigned char sx, sy, value;
-    if (x > 127 || y > 47) return 0;
-    gx = x / 2;
-    gy = y / 3;
-    sx = x % 2;
-    sy = y % 3;
-
-    value = *(vti_start + gx + (64*gy));
-    if (value & 0x80) value = 0x3f;
-    return ~value & pow[3*sx + sy] ? 1 : 0;
-}
-*/
 
 void vti_box(char mode, int x0, int y0, int x1, int y1) {
     static int i;
