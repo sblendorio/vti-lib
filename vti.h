@@ -17,7 +17,7 @@ void vti_scroll_up(int n);
 void vti_scroll_down(int n);
 void vti_put_shape(int x, int y, char *shape, int w, int h);
 void vti_set_keyboard_port(int port);
-unsigned char vti_read_keyboard();
-unsigned char vti_keypressed();
+unsigned char vti_read_keyboard(void);
+unsigned char vti_keypressed(void);
 
 #endif

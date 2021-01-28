@@ -17,7 +17,7 @@ void vti_set_keyboard_port(int port) __z88dk_fastcall {
 #endasm
 }
 
-unsigned char vti_read_keyboard() __z88dk_fastcall {
+unsigned char vti_read_keyboard(void) __z88dk_fastcall {
 #asm
 portsmc:
     in a,(0xf8)
@@ -26,7 +26,7 @@ portsmc:
 #endasm
 }
 
-unsigned char vti_keypressed() {
+unsigned char vti_keypressed(void) {
     return vti_read_keyboard() & 0x80;
 }
 
