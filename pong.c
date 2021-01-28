@@ -245,7 +245,10 @@ void intro_screen(void) {
         if (ch == '+' && speed < 15) ++speed;
         else if (ch == '-' && speed > 1) --speed;
     } while (ch == '+' || ch == '-');
-    if (ch == '.') exit(0);
+    if (ch == '.') {
+        vti_clear_screen();
+        exit(0);
+    }
 
     srand(seed);
 }
