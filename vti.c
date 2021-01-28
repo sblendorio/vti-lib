@@ -55,23 +55,23 @@ void vti_set_start(unsigned int start) {
     vti_set_keyboard_port(start >> 8);
 }
 
-	unsigned char *addr = vti_start + x + (64*y);
 void vti_print_at(unsigned int x, unsigned int y, char *msg) {
+	unsigned char *addr = vti_start + x + (VTI_WIDTH*y);
 	while(*msg) {
 		*addr++ = *msg++ | 0x80;   // bit 7 on: ASCII TEXT
 	}
 }
 
-    vti_print_at((64-strlen(msg))/2, y, msg);
 void vti_center_at(unsigned int y, unsigned char *msg) {
+    vti_print_at((VTI_WIDTH-strlen(msg))/2, y, msg);
 }
 
-	*(vti_start + x + (64*y)) = ch;
 void vti_rawchar_at(unsigned int x, unsigned int y, char ch) {
+	*(vti_start + x + (VTI_WIDTH*y)) = ch;
 }
 
 void vti_clear_screen(void) {
-    memset(vti_start, 0xa0, 0x400);
+    memset(vti_start, 0xa0, VTI_PAGESIZE);
 }
 
 void vti_plot(unsigned char mode, unsigned int x, unsigned int y) {
@@ -177,18 +177,18 @@ void vti_ellipse_rect(char mode, int x0, int y0, int x1, int y1)
    }
 }
 
-    return *(vti_start + x + (64*y));
 unsigned char vti_read_char(unsigned int x, unsigned int y) {
+    return *(vti_start + x + (VTI_WIDTH*y));
 }
 
-    memcpy(vti_start, vti_start + (0x40 * n), 0x0400 - (0x40 * n));
-    memset(vti_start + 0x400 - (0x40 * n), 0xa0, 0x40*n);
 void vti_scroll_up(unsigned int n) {
+    memcpy(vti_start, vti_start + (VTI_WIDTH * n), VTI_PAGESIZE - (VTI_WIDTH * n));
+    memset(vti_start + VTI_PAGESIZE - (VTI_WIDTH * n), 0xa0, VTI_WIDTH*n);
 }
 
-    memmove(vti_start + (0x40 * n), vti_start, 0x0400 - (0x40 * n));
-    memset(vti_start, 0xa0, 0x40 * n);
 void vti_scroll_down(unsigned int n) {
+    memmove(vti_start + (VTI_WIDTH * n), vti_start, VTI_PAGESIZE - (VTI_WIDTH * n));
+    memset(vti_start, 0xa0, VTI_WIDTH * n);
 }
 
 void vti_put_shape(int x, int y, char *shape, int w, int h) {

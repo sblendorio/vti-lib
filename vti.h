@@ -1,6 +1,10 @@
 #ifndef _VTI_H
 #define _VTI_H
 
+#define VTI_WIDTH    64
+#define VTI_HEIGHT   16
+#define VTI_PAGESIZE (VTI_WIDTH * VTI_HEIGHT)
+
 void vti_set_start(unsigned int start);
 void vti_print_at(unsigned int x, unsigned int y, char *msg);
 void vti_center_at(unsigned int y, unsigned char *msg);
