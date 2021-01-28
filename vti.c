@@ -131,13 +131,11 @@ void vti_boxfill(unsigned char mode, unsigned int x0, unsigned int y0, unsigned 
 }
 
 // http://members.chello.at/~easyfilter/bresenham.html
-   int sy = y0<y1 ? 1 : -1; 
-      if (e2 >= dy) { err += dy; x0 += sx; } /* e_xy+e_x > 0 */
-      if (e2 <= dx) { err += dx; y0 += sy; } /* e_xy+e_y < 0 */
 void vti_line(unsigned char mode, unsigned int _x0, unsigned int _y0, unsigned int _x1, unsigned int _y1) {
 
     static unsigned int x0,y0,x1,y1;
     static int dx,sx,dy,sy,err,e2;
+    static unsigned char ix,iy;
     x0 = _x0;
     y0 = _y0;
     x1 = _x1;
@@ -147,11 +145,15 @@ void vti_line(unsigned char mode, unsigned int _x0, unsigned int _y0, unsigned i
     dy = -absolute(y1-y0);
     err = dx+dy; /* error value e_xy */
 
+    ix = x0<x1;
+    iy = y0<y1;
 
     for(;;){  /* loop */
         vti_plot(mode,x0,y0);
         if (x0==x1 && y0==y1) break;
         e2 = 2*err;
+        if (e2 >= dy) { err += dy; if(ix) ++x0; else --x0; } /* e_xy+e_x > 0 */
+        if (e2 <= dx) { err += dx; if(iy) ++y0; else --y0; } /* e_xy+e_y < 0 */
     }
 }
 
