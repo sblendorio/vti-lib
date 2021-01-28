@@ -192,13 +192,15 @@ void vti_scroll_down(unsigned int n) {
     memset(vti_start, 0xa0, VTI_WIDTH * n);
 }
 
-void vti_put_shape(int x, int y, char *shape, int w, int h) {
-    unsigned int ih, iw;
-    char ch;
-    for (ih = 0; ih < h; ++ih) {
-        for (iw = 0; iw < w; ++iw) {
+void vti_put_shape(unsigned int x, unsigned int y, char *shape, unsigned int w, unsigned int h) {
+    static unsigned int xx, yy, ex, ey;
+    static char ch;
+    ex = x+w;
+    ey = y+h;
+    for (yy = y; yy < ey; ++yy) {
+        for (xx = x; xx < ex; ++xx) {
             ch = *shape++;
-            if (ch == '*' || ch =='.') vti_plot(ch == '*' ? 1 : 0, x+iw, y+ih);
+            vti_plot(ch == '*' ? 1 : 0, xx, yy);
         }
     }
 }
