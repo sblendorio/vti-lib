@@ -120,7 +120,7 @@ void vti_plot(char mode, unsigned int x, unsigned int y) {
         : mode == 0 ?
             value | mask
         : // mode = 2 -> XOR mode
-            (~value & mask ? value | mask : value & (~mask));
+            value ^ mask;
 }
 
 char vti_read_pixel(unsigned int x, unsigned int y) {
