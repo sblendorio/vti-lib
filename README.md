@@ -76,7 +76,7 @@ By default, the start address is **$F800**. To use another address, pass it as a
 
 This will make the demo use $E800 (59392) as start address for the graphics card.
 
-## Runnning demo in a video
+## Running demo in a video
 
 [![running-demo](https://img.youtube.com/vi/v8e73I5sO7A/0.jpg)](https://www.youtube.com/watch?v=v8e73I5sO7A)
 
