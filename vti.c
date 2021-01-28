@@ -5,7 +5,6 @@ unsigned char *vti_start = (unsigned char *) 0xf800;
 static unsigned char pow[] = {32, 16, 8, 4, 2, 1};
 
 int absolute(int x);
-void vti_set_keyboard_port(int port);
 
 int absolute(int x) {
     return x < 0 ? -x : x;
