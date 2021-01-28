@@ -2,21 +2,21 @@
 #define _VTI_H
 
 void vti_set_start(unsigned int start);
-void vti_print_at(int x, int y, unsigned char *msg);
-void vti_center_at(int y, unsigned char *msg);
+void vti_print_at(unsigned int x, unsigned int y, char *msg);
+void vti_center_at(unsigned int y, unsigned char *msg);
 void vti_clear_screen(void);
-void vti_rawchar_at(int x, int y, char ch);
-void vti_plot(char mode, unsigned int x, unsigned int y);
-void vti_line(char mode, int x0, int y0, int x1, int y1);
-void vti_ellipse_rect(char mode, int x0, int y0, int x1, int y1);
-void vti_box(char mode, int x0, int y0, int x1, int y1);
-void vti_boxfill(char mode, int x0, int y0, int x1, int y1);
-char vti_read_pixel(unsigned int x, unsigned int y);
-unsigned char vti_read_char(int x, int y);
-void vti_scroll_up(int n);
-void vti_scroll_down(int n);
-void vti_put_shape(int x, int y, char *shape, int w, int h);
-void vti_set_keyboard_port(int port);
+void vti_rawchar_at(unsigned int x, unsigned int y, char ch);
+void vti_plot(unsigned char mode, unsigned int x, unsigned int y);
+void vti_line(unsigned char mode, unsigned int x0, unsigned int y0, unsigned int x1, unsigned int y1);
+void vti_ellipse_rect(unsigned char mode, unsigned int x0, unsigned int y0, unsigned int x1, unsigned int y1);
+void vti_box(unsigned char mode, unsigned int x0, unsigned int y0, unsigned int x1, unsigned int y1);
+void vti_boxfill(unsigned char mode, unsigned int x0, unsigned int y0, unsigned int x1, unsigned int y1);
+unsigned char vti_read_pixel(unsigned int x, unsigned int y);
+unsigned char vti_read_char(unsigned int x, unsigned int y);
+void vti_scroll_up(unsigned int n);
+void vti_scroll_down(unsigned int n);
+void vti_put_shape(unsigned int x, unsigned int y, char *shape, unsigned int w, unsigned int h);
+void vti_set_keyboard_port(unsigned int port);
 unsigned char vti_read_keyboard(void);
 unsigned char vti_keypressed(void);
 

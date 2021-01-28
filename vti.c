@@ -30,7 +30,7 @@ int absolute(int x) {
     return x < 0 ? -x : x;
 }
 
-void vti_set_keyboard_port(int port) __z88dk_fastcall {
+void vti_set_keyboard_port(unsigned int port) __z88dk_fastcall {
 #asm
     ld a,l
     ld (portsmc+1),a
@@ -55,26 +55,26 @@ void vti_set_start(unsigned int start) {
     vti_set_keyboard_port(start >> 8);
 }
 
-void vti_print_at(int x, int y, unsigned char *msg) {
 	unsigned char *addr = vti_start + x + (64*y);
+void vti_print_at(unsigned int x, unsigned int y, char *msg) {
 	while(*msg) {
 		*addr++ = *msg++ | 0x80;   // bit 7 on: ASCII TEXT
 	}
 }
 
-void vti_center_at(int y, unsigned char *msg) {
     vti_print_at((64-strlen(msg))/2, y, msg);
+void vti_center_at(unsigned int y, unsigned char *msg) {
 }
 
-void vti_rawchar_at(int x, int y, char ch) {
 	*(vti_start + x + (64*y)) = ch;
+void vti_rawchar_at(unsigned int x, unsigned int y, char ch) {
 }
 
 void vti_clear_screen(void) {
     memset(vti_start, 0xa0, 0x400);
 }
 
-void vti_plot(char mode, unsigned int x, unsigned int y) {
+void vti_plot(unsigned char mode, unsigned int x, unsigned int y) {
     static unsigned char *addr;
     static unsigned int gx;
     static unsigned char sx, sy, mask, value;
@@ -97,7 +97,7 @@ void vti_plot(char mode, unsigned int x, unsigned int y) {
             value ^ mask;
 }
 
-char vti_read_pixel(unsigned int x, unsigned int y) {
+unsigned char vti_read_pixel(unsigned int x, unsigned int y) {
     static unsigned int gx;
     static unsigned char sx, sy, mask, value;
     if (x > 127 || y > 47) return 0;
@@ -110,8 +110,8 @@ char vti_read_pixel(unsigned int x, unsigned int y) {
     return ~value & mask ? 1 : 0;
 }
 
-void vti_box(char mode, int x0, int y0, int x1, int y1) {
     static int i;
+void vti_box(unsigned char mode, unsigned int x0, unsigned int y0, unsigned int x1, unsigned int y1) {
     for (i=x0; i<=x1; ++i) {
         vti_plot(mode, i, y0);
         vti_plot(mode, i, y1);
@@ -122,8 +122,8 @@ void vti_box(char mode, int x0, int y0, int x1, int y1) {
     }
 }
 
-void vti_boxfill(char mode, int x0, int y0, int x1, int y1) {
     static int i,j;
+void vti_boxfill(unsigned char mode, unsigned int x0, unsigned int y0, unsigned int x1, unsigned int y1) {
     for (i=x0; i<=x1; ++i)
         for (j=y0; j<=y1; ++j)
             vti_plot(mode, i, j);
@@ -177,18 +177,18 @@ void vti_ellipse_rect(char mode, int x0, int y0, int x1, int y1)
    }
 }
 
-unsigned char vti_read_char(int x, int y) {
     return *(vti_start + x + (64*y));
+unsigned char vti_read_char(unsigned int x, unsigned int y) {
 }
 
-void vti_scroll_up(int n) {
     memcpy(vti_start, vti_start + (0x40 * n), 0x0400 - (0x40 * n));
     memset(vti_start + 0x400 - (0x40 * n), 0xa0, 0x40*n);
+void vti_scroll_up(unsigned int n) {
 }
 
-void vti_scroll_down(int n) {
     memmove(vti_start + (0x40 * n), vti_start, 0x0400 - (0x40 * n));
     memset(vti_start, 0xa0, 0x40 * n);
+void vti_scroll_down(unsigned int n) {
 }
 
 void vti_put_shape(int x, int y, char *shape, int w, int h) {
