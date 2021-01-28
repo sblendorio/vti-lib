@@ -56,7 +56,7 @@ The parameter **mode** represents the way the dot is drawn, and can have the fol
 * vti_boxfill(*\<mode\>*, *\<x0\>*, *\<y0\>*, *\<x1\>*, *\<y1\>*)
 * vti_scroll_up(*\<number-of-rows\>*)
 * vti_scroll_down(*\<number-of-rows\>*)
-* vti_put_shape(*\<x\>*, *\<y\>*, char [][], *\<width\>*, *\<height\>*)
+* vti_put_shape(*\<x\>*, *\<y\>*, char\*, *\<width\>*, *\<height\>*)
 * *\<pixel\>* = vti_read_pixel(*\<x\>*, *\<y\>*)
 * *\<ch\>* = vti_read_char(*\<x\>*, *\<y\>*)
 
