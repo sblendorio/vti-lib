@@ -16,7 +16,7 @@ static unsigned int vti_row[48] = {
 };
 
 // precalculated table with Y % 3
-static unsigned int vti_mod[48] = {
+static unsigned char vti_mod[48] = {
   0, 1, 2, 0, 1, 2, 0, 1, 2, 0, 1,
   2, 0, 1, 2, 0, 1, 2, 0, 1, 2, 0,
   1, 2, 0, 1, 2, 0, 1, 2, 0, 1, 2,
