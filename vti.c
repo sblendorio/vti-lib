@@ -58,11 +58,11 @@ void vti_set_start(unsigned int start) {
 void vti_print_at(unsigned int x, unsigned int y, char *msg) {
 	unsigned char *addr = vti_start + x + (VTI_WIDTH*y);
 	while(*msg) {
-		*addr++ = *((unsigned char *)msg)++ | 0x80;   // bit 7 on: ASCII TEXT
+		*addr++ = *((unsigned char *)msg++) | 0x80;   // bit 7 on: ASCII TEXT
 	}
 }
 
-void vti_center_at(unsigned int y, unsigned char *msg) {
+void vti_center_at(unsigned int y, char *msg) {
     vti_print_at((VTI_WIDTH-strlen(msg))/2, y, msg);
 }
 
@@ -94,10 +94,6 @@ void vti_plot(unsigned char mode, unsigned int x, unsigned int y) {
             value | mask
         : mode == 1 ?
             value & (~mask)
-        : // mode = 2 -> XOR mode
-            value ^ mask;
-}
-            value | mask
         : // mode = 2 -> XOR mode
             value ^ mask;
 }
