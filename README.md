@@ -60,21 +60,26 @@ The parameter **mode** represents the way the dot is drawn, and can have the fol
 * *\<pixel\>* = vti_read_pixel(*\<x\>*, *\<y\>*)
 * *\<ch\>* = vti_read_char(*\<x\>*, *\<y\>*)
 
-## Compiling demo
+## Compiling demos
 
-There is a **build.bat** file which does all the work with **Z88DK**, which is simply:
+There is a **build.bat** file which does all the work with **Z88DK**, this is a sample line:
 
 ```$ zcc +cpm -clib=8080 demo.c vti.c -o demo.com```
 
-## List of library's functions
-
-## Launching demo
+## Launching demos
 
 By default, the start address is **$F800**. To use another address, pass it as argument in decimal notation:
 
 ```$ demo 59392```
 
 This will make the demo use $E800 (59392) as start address for the graphics card.
+
+There are the following demos (launch each of them eventually with the start address as parameter):
+
+* **demo.com**: a bunch of sample of most function available in the library
+* **ball.com**: a *bouncing ball* across the screen
+* **pong.com**: the famous game, using a keyboard connected to the VTI's special slot
+* **bezier.com**: drawing of the G-clef, using bezier curves
 
 ## Running demo in a video
 

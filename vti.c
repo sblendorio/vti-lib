@@ -24,9 +24,9 @@ static unsigned char vti_mod[48] = {
   2, 0, 1, 2
 };
 
-int absolute(int x);
+int vti_abs(int x);
 
-int absolute(int x) {
+int vti_abs(int x) {
     return x < 0 ? -x : x;
 }
 
@@ -58,7 +58,7 @@ void vti_set_start(unsigned int start) {
 void vti_print_at(unsigned int x, unsigned int y, char *msg) {
 	unsigned char *addr = vti_start + x + (VTI_WIDTH*y);
 	while(*msg) {
-		*addr++ = *((unsigned char *)msg++) | 0x80;   // bit 7 on: ASCII TEXT
+		*addr++ = *(unsigned char *)msg++ | 0x80;   // bit 7 on: ASCII TEXT
 	}
 }
 
@@ -141,8 +141,8 @@ void vti_line(unsigned char mode, unsigned int _x0, unsigned int _y0, unsigned i
     x1 = _x1;
     y1 = _y1;
 
-    dx =  absolute(x1-x0);
-    dy = -absolute(y1-y0);
+    dx =  vti_abs(x1-x0);
+    dy = -vti_abs(y1-y0);
     err = dx+dy; /* error value e_xy */
 
     ix = x0<x1;
@@ -166,7 +166,7 @@ void vti_ellipse_rect(unsigned char mode, unsigned int _x0, unsigned int _y0, un
     x1 = _x1;
     y1 = _y1;
 
-    long a = absolute(x1-x0), b = absolute(y1-y0);
+    long a = vti_abs(x1-x0), b = vti_abs(y1-y0);
     long b1 = b&1; /* values of diameter */
     long dx = 4*(1-a)*b*b, dy = 4*(b1+1)*a*a; /* error increment */
     long err = dx+dy+b1*a*a, e2; /* error of 1.step */

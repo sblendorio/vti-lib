@@ -31,7 +31,7 @@ char ball_x, ball_y, prev_ball_x, prev_ball_y, ball_step, dx, dy;
 unsigned int score_a, score_b;
 unsigned int seed;
 unsigned char count;
-unsigned char speed = 3;
+unsigned char speed = 5;
 
 char *boom =
     "....********...."
@@ -108,10 +108,12 @@ void main(int argc, char *argv[]) {
                     if (outcome == 1) {
                         ++score_a;
                         vti_put_shape(100, 10, boom, 16, 10);
+                        csleep(10);
                         vti_boxfill(0,100, 10, 116, 20);
                     } else {
                         ++score_b;
                         vti_put_shape(11, 10, boom, 16, 10);
+                        csleep(10);
                         vti_boxfill(0,11, 10, 11+16, 20);
                     }
                     update_score();
