@@ -2,8 +2,8 @@
 #include <string.h>
 
 unsigned char *vti_start = (unsigned char *) 0xf800;
-static unsigned char pow0[] = {32, 16, 8};
-static unsigned char pow1[] = {4,  2,  1};
+static unsigned char vti_pow0[] = {32, 16, 8};
+static unsigned char vti_pow1[] = {4,  2,  1};
 
 // precalculated table with address of row Y
 static unsigned int vti_row[48] = {
@@ -83,7 +83,7 @@ void vti_plot(unsigned char mode, unsigned int x, unsigned int y) {
     gx = x / 2;
     sx = x % 2;
     sy = vti_mod[y];
-    mask = sx == 0 ? pow0[sy] : pow1[sy];
+    mask = sx == 0 ? vti_pow0[sy] : vti_pow1[sy];
     addr = vti_start + gx + vti_row[y];
 
     value = *addr;
@@ -105,7 +105,7 @@ unsigned char vti_read_pixel(unsigned int x, unsigned int y) {
     gx = x / 2;
     sx = x % 2;
     sy = vti_mod[y];
-    mask = sx == 0 ? pow0[sy] : pow1[sy];
+    mask = sx == 0 ? vti_pow0[sy] : vti_pow1[sy];
     value = *(vti_start + gx + vti_row[y]);
     if (value & 0x80) value = 0x3f;
     return ~value & mask ? 1 : 0;

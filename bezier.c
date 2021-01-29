@@ -12,7 +12,7 @@ int trx(int x);
 int try(int y);
 
 // https://billthefarmer.github.io/blog/post/draw-musical-staff/
-int tc[][2]= // 71
+int tc[][2]= // 71 elements
     {
         {-6, 16},  {-8, 13},  {-14, 19},  {-10, 35},  {2, 35},  {8, 37}, // 6
         {21, 30},  {21, 17},  {21, 5},  {10, -1},  {0, -1},  {-12, -1},  // 6
@@ -61,13 +61,14 @@ long absolute_long(long x) {
 }
 
 int trx(int x) {
-    return x+30;
+    return x+60;
 }
 
 int try(int y) {
     return 40-(y+5)/2.35;
 }
 
+// https://stackoverflow.com/questions/31757501/pixel-by-pixel-b%C3%A9zier-curve
 void plotQuadBezier(char mode, int x0, int y0, int x1, int y1, int x2, int y2)
 { /* plot any quadratic Bezier curve */
   int x = x0-x1, y = y0-y1;
@@ -99,6 +100,7 @@ void plotQuadBezier(char mode, int x0, int y0, int x1, int y1, int x2, int y2)
   plotQuadBezierSeg(mode, x0,y0, x1,y1, x2,y2); /* remaining part */
 }
 
+// https://stackoverflow.com/questions/31757501/pixel-by-pixel-b%C3%A9zier-curve
 void plotQuadBezierSeg(char mode, int x0, int y0, int x1, int y1, int x2, int y2)
 { /* plot a limited quadratic Bezier segment */
   long sx = x2-x1, sy = y2-y1;
@@ -128,8 +130,6 @@ void plotQuadBezierSeg(char mode, int x0, int y0, int x1, int y1, int x2, int y2
   }
   vti_line(mode,x0,y0, x2,y2); /* plot remaining part to end */
 }
-
-
 
 // https://stackoverflow.com/questions/31757501/pixel-by-pixel-b%C3%A9zier-curve
 void plotCubicBezier(char mode, int x0, int y0, int x1, int y1, int x2, int y2, int x3, int y3)
