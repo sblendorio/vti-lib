@@ -90,9 +90,13 @@ void vti_plot(unsigned char mode, unsigned int x, unsigned int y) {
     if (value & 0x80) value = 0x3f;
 
     *addr =
-          mode == 1 ?
+          mode == 0 ?
+            value | mask
+        : mode == 1 ?
             value & (~mask)
-        : mode == 0 ?
+        : // mode = 2 -> XOR mode
+            value ^ mask;
+}
             value | mask
         : // mode = 2 -> XOR mode
             value ^ mask;
