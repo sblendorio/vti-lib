@@ -80,6 +80,7 @@ There are the following demos (launch each of them eventually with the start add
 * **ball.com**: a *bouncing ball* across the screen
 * **pong.com**: the famous game, using a keyboard connected to the VTI's special slot
 * **bezier.com**: drawing of the G-clef, using bezier curves
+* **lenna.com**: drawing of the famous sample image (https://en.wikipedia.org/wiki/Lenna) 
 
 ## Running demo in a video
 
@@ -89,3 +90,5 @@ There are the following demos (launch each of them eventually with the start add
 Thanks to:
 - [**Alois Zingl**](http://members.chello.at/~easyfilter/bresenham.html) for implementation of Bresenham's Algorithms (lines and curves drawing)
 - [**Andrea Matteucci**](https://www.facebook.com/andrewmattew81/) for hardware providing and fixing
+- [**Antonino Porcino**](https://github.com/nippur72) for optimizazions and "lenna" demo
+
