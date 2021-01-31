@@ -82,7 +82,7 @@ There are the following demos (launch each of them eventually with the start add
 * **bezier.com**: drawing of the G-clef, using bezier curves
 * **lenna.com**: drawing of the famous sample image (https://en.wikipedia.org/wiki/Lenna) 
 
-![Lenna demo](lenna-photo.jpg)
+<img src="lenna-photo.jpg" width="500" alt="Lenna demo" />
 
 ## Running demo in a video
 
