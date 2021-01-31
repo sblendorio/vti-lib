@@ -82,6 +82,8 @@ There are the following demos (launch each of them eventually with the start add
 * **bezier.com**: drawing of the G-clef, using bezier curves
 * **lenna.com**: drawing of the famous sample image (https://en.wikipedia.org/wiki/Lenna) 
 
+![Lenna demo](./lenna-photo.jpg | width=800)
+
 ## Running demo in a video
 
 [![running-demo](https://img.youtube.com/vi/v8e73I5sO7A/0.jpg)](https://www.youtube.com/watch?v=v8e73I5sO7A)
