@@ -80,7 +80,7 @@ There are the following demos (launch each of them eventually with the start add
 * **ball.com**: a *bouncing ball* across the screen
 * **pong.com**: the famous game, using a keyboard connected to the VTI's special slot
 * **bezier.com**: drawing of the G-clef, using bezier curves
-* **lenna.com**: drawing of the famous sample image (https://en.wikipedia.org/wiki/Lenna) 
+* **lenna.com**: drawing of the famous test image https://en.wikipedia.org/wiki/Lenna
 
 <img src="lenna-photo.jpg" width="500" alt="Lenna demo" />
 
