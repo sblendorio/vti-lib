@@ -413,8 +413,7 @@ void main(int argc, char *argv[]) {
    addr = lenna;
    for(unsigned int y=0; y<48; y++) {
       for(unsigned int x=0; x<128; x++) {
-         vti_plot(*addr,x,y);
-         addr++;
+         if(*addr++) vti_plot(x,y);
       }
    }
 
