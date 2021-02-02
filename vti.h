@@ -4,6 +4,8 @@
 #define VTI_WIDTH      64
 #define VTI_HEIGHT     16
 #define VTI_PAGESIZE   (VTI_WIDTH * VTI_HEIGHT)
+#define VTI_BLANK_CHAR 0xa0
+
 #define vti_setmode(x) (vti_mode = (x))
 
 extern unsigned char vti_mode;

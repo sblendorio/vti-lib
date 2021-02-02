@@ -72,7 +72,7 @@ void vti_rawchar_at(unsigned int x, unsigned int y, char ch) {
 }
 
 void vti_clear_screen(void) {
-    memset(vti_start, 0xa0, VTI_PAGESIZE);
+    memset(vti_start, VTI_BLANK_CHAR, VTI_PAGESIZE);
 }
 
 void vti_plot(unsigned int x, unsigned int y) {
@@ -201,12 +201,12 @@ unsigned char vti_read_char(unsigned int x, unsigned int y) {
 
 void vti_scroll_up(unsigned int n) {
     memcpy(vti_start, vti_start + (VTI_WIDTH * n), VTI_PAGESIZE - (VTI_WIDTH * n));
-    memset(vti_start + VTI_PAGESIZE - (VTI_WIDTH * n), 0xa0, VTI_WIDTH*n);
+    memset(vti_start + VTI_PAGESIZE - (VTI_WIDTH * n), VTI_BLANK_CHAR, VTI_WIDTH*n);
 }
 
 void vti_scroll_down(unsigned int n) {
     memmove(vti_start + (VTI_WIDTH * n), vti_start, VTI_PAGESIZE - (VTI_WIDTH * n));
-    memset(vti_start, 0xa0, VTI_WIDTH * n);
+    memset(vti_start, VTI_BLANK_CHAR, VTI_WIDTH * n);
 }
 
 void vti_put_shape(unsigned int x, unsigned int y, char *shape, unsigned int w, unsigned int h) {
