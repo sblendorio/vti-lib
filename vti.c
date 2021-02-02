@@ -90,13 +90,9 @@ void vti_plot(unsigned int x, unsigned int y) {
     value = *addr;
     if (value & 0x80) value = 0x3f;
 
-    *addr =
-          vti_mode == 0 ?
-            value | mask
-        : vti_mode == 1 ?
-            value & (~mask)
-        : // mode = 2 -> XOR mode
-            value ^ mask;
+    *addr =  vti_mode == VTI_MODE_RESET   ? value | mask    :
+             vti_mode == VTI_MODE_SET     ? value & (~mask) :
+           /*vti_mode == VTI_MODE_XOR*/     value ^ mask;
 }
 
 unsigned char vti_read_pixel(unsigned int x, unsigned int y) {
