@@ -2,6 +2,7 @@
 #include <string.h>
 
 unsigned char *vti_start = (unsigned char *) 0xf800;
+unsigned char vti_mode = 0;
 static unsigned char vti_pow0[] = {32, 16, 8};
 static unsigned char vti_pow1[] = {4,  2,  1};
 
@@ -74,7 +75,7 @@ void vti_clear_screen(void) {
     memset(vti_start, 0xa0, VTI_PAGESIZE);
 }
 
-void vti_plot(unsigned char mode, unsigned int x, unsigned int y) {
+void vti_plot(unsigned int x, unsigned int y) {
     static unsigned char *addr;
     static unsigned int gx;
     static unsigned char sx, sy, mask, value;
@@ -90,9 +91,9 @@ void vti_plot(unsigned char mode, unsigned int x, unsigned int y) {
     if (value & 0x80) value = 0x3f;
 
     *addr =
-          mode == 0 ?
+          vti_mode == 0 ?
             value | mask
-        : mode == 1 ?
+        : vti_mode == 1 ?
             value & (~mask)
         : // mode = 2 -> XOR mode
             value ^ mask;
@@ -111,27 +112,27 @@ unsigned char vti_read_pixel(unsigned int x, unsigned int y) {
     return ~value & mask ? 1 : 0;
 }
 
-void vti_box(unsigned char mode, unsigned int x0, unsigned int y0, unsigned int x1, unsigned int y1) {
+void vti_box(unsigned int x0, unsigned int y0, unsigned int x1, unsigned int y1) {
     static unsigned int i;
     for (i=x0; i<=x1; ++i) {
-        vti_plot(mode, i, y0);
-        vti_plot(mode, i, y1);
+        vti_plot(i, y0);
+        vti_plot(i, y1);
     }
     for (i=y0; i<=y1; ++i) {
-        vti_plot(mode, x0, i);
-        vti_plot(mode, x1, i);
+        vti_plot(x0, i);
+        vti_plot(x1, i);
     }
 }
 
-void vti_boxfill(unsigned char mode, unsigned int x0, unsigned int y0, unsigned int x1, unsigned int y1) {
+void vti_boxfill(unsigned int x0, unsigned int y0, unsigned int x1, unsigned int y1) {
     static unsigned int i,j;
     for (i=x0; i<=x1; ++i)
         for (j=y0; j<=y1; ++j)
-            vti_plot(mode, i, j);
+            vti_plot(i, j);
 }
 
 // http://members.chello.at/~easyfilter/bresenham.html
-void vti_line(unsigned char mode, unsigned int _x0, unsigned int _y0, unsigned int _x1, unsigned int _y1) {
+void vti_line(unsigned int _x0, unsigned int _y0, unsigned int _x1, unsigned int _y1) {
 
     static unsigned int x0,y0,x1,y1;
     static int dx,sx,dy,sy,err,e2;
@@ -149,7 +150,7 @@ void vti_line(unsigned char mode, unsigned int _x0, unsigned int _y0, unsigned i
     iy = y0<y1;
 
     for(;;){  /* loop */
-        vti_plot(mode,x0,y0);
+        vti_plot(x0,y0);
         if (x0==x1 && y0==y1) break;
         e2 = 2*err;
         if (e2 >= dy) { err += dy; if(ix) ++x0; else --x0; } /* e_xy+e_x > 0 */
@@ -158,7 +159,7 @@ void vti_line(unsigned char mode, unsigned int _x0, unsigned int _y0, unsigned i
 }
 
 // http://members.chello.at/~easyfilter/bresenham.html
-void vti_ellipse_rect(unsigned char mode, unsigned int _x0, unsigned int _y0, unsigned int _x1, unsigned int _y1)
+void vti_ellipse_rect(unsigned int _x0, unsigned int _y0, unsigned int _x1, unsigned int _y1)
 {
     static unsigned int x0,y0,x1,y1;
     x0 = _x0;
@@ -177,20 +178,20 @@ void vti_ellipse_rect(unsigned char mode, unsigned int _x0, unsigned int _y0, un
     a *= 8*a; b1 = 8*b*b;
 
     do {
-        vti_plot(mode, x1, y0); /*   I. Quadrant */
-        vti_plot(mode, x0, y0); /*  II. Quadrant */
-        vti_plot(mode, x0, y1); /* III. Quadrant */
-        vti_plot(mode, x1, y1); /*  IV. Quadrant */
+        vti_plot(x1, y0); /*   I. Quadrant */
+        vti_plot(x0, y0); /*  II. Quadrant */
+        vti_plot(x0, y1); /* III. Quadrant */
+        vti_plot(x1, y1); /*  IV. Quadrant */
         e2 = 2*err;
         if (e2 <= dy) { y0++; y1--; err += dy += a; }  /* y step */
         if (e2 >= dx || 2*err > dy) { x0++; x1--; err += dx += b1; } /* x step */
     } while (x0 <= x1);
    
     while (y0-y1 < b) {  /* too early stop of flat ellipses a=1 */
-        vti_plot(mode, x0-1, y0); /* -> finish tip of ellipse */
-        vti_plot(mode, x1+1, y0++);
-        vti_plot(mode, x0-1, y1);
-        vti_plot(mode, x1+1, y1--);
+        vti_plot(x0-1, y0); /* -> finish tip of ellipse */
+        vti_plot(x1+1, y0++);
+        vti_plot(x0-1, y1);
+        vti_plot(x1+1, y1--);
     }
 }
 
@@ -211,12 +212,16 @@ void vti_scroll_down(unsigned int n) {
 void vti_put_shape(unsigned int x, unsigned int y, char *shape, unsigned int w, unsigned int h) {
     static unsigned int xx, yy, ex, ey;
     static char ch;
+    static unsigned char old_mode;
+    old_mode = vti_mode;
     ex = x+w;
     ey = y+h;
     for (yy = y; yy < ey; ++yy) {
         for (xx = x; xx < ex; ++xx) {
             ch = *shape++;
-            vti_plot(ch == '*' ? 1 : 0, xx, yy);
+            vti_setmode(ch == '*');
+            vti_plot(xx, yy);
         }
     }
+    vti_setmode(old_mode);
 }
