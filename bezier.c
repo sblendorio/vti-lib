@@ -2,10 +2,10 @@
 #include <math.h>
 #include "vti.h"
 
-void plotCubicBezier(char mode, int x0, int y0, int x1, int y1, int x2, int y2, int x3, int y3);
-void plotCubicBezierSeg(char mode, int x0, int y0, float x1, float y1, float x2, float y2, int x3, int y3);
-void plotQuadBezier(char mode, int x0, int y0, int x1, int y1, int x2, int y2);
-void plotQuadBezierSeg(char mode, int x0, int y0, int x1, int y1, int x2, int y2);
+void plotCubicBezier(int x0, int y0, int x1, int y1, int x2, int y2, int x3, int y3);
+void plotCubicBezierSeg(int x0, int y0, float x1, float y1, float x2, float y2, int x3, int y3);
+void plotQuadBezier(int x0, int y0, int x1, int y1, int x2, int y2);
+void plotQuadBezierSeg(int x0, int y0, int x1, int y1, int x2, int y2);
 long absolute_long(long x);
 
 int trx(int x);
@@ -41,11 +41,11 @@ void main(int argc, char *argv[]) {
 
     vti_clear_screen();
     
-    vti_line(1, trx(tc[0][0]), try(tc[0][1]), trx(tc[1][0]), try(tc[1][1]));
+    vti_line(trx(tc[0][0]), try(tc[0][1]), trx(tc[1][0]), try(tc[1][1]));
     x0 = trx(tc[1][0]);
     y0 = try(tc[1][1]);
     for (int i=2; i<71; i+=3) {
-        plotCubicBezier(1, x0, y0, 
+        plotCubicBezier(x0, y0,
             trx(tc[i][0]), try(tc[i][1]), 
             trx(tc[i+1][0]), try(tc[i+1][1]), 
             trx(tc[i+2][0]), try(tc[i+2][1]));
@@ -69,7 +69,7 @@ int try(int y) {
 }
 
 // https://stackoverflow.com/questions/31757501/pixel-by-pixel-b%C3%A9zier-curve
-void plotQuadBezier(char mode, int x0, int y0, int x1, int y1, int x2, int y2)
+void plotQuadBezier(int x0, int y0, int x1, int y1, int x2, int y2)
 { /* plot any quadratic Bezier curve */
   int x = x0-x1, y = y0-y1;
   double t = x0-2*x1+x2, r;
@@ -83,7 +83,7 @@ void plotQuadBezier(char mode, int x0, int y0, int x1, int y1, int x2, int y2)
     t = (x0*x2-x1*x1)*t/(x0-x1); /* gradient dP4/dx=0 */
     x = floor(t+0.5); y = floor(r+0.5);
     r = (y1-y0)*(t-x0)/(x1-x0)+y0; /* intersect P3 | P0 P1 */
-    plotQuadBezierSeg(mode, x0,y0, x,floor(r+0.5), x,y);
+    plotQuadBezierSeg(x0,y0, x,floor(r+0.5), x,y);
     r = (y1-y2)*(t-x2)/(x1-x2)+y2; /* intersect P4 | P1 P2 */
     x0 = x1 = x; y0 = y; y1 = floor(r+0.5); /* P0 = P4, P1 = P8 */
   }
@@ -93,15 +93,15 @@ void plotQuadBezier(char mode, int x0, int y0, int x1, int y1, int x2, int y2)
     t = (y0*y2-y1*y1)*t/(y0-y1); /* gradient dP6/dy=0 */
     x = floor(r+0.5); y = floor(t+0.5);
     r = (x1-x0)*(t-y0)/(y1-y0)+x0; /* intersect P6 | P0 P1 */
-    plotQuadBezierSeg(mode, x0,y0, floor(r+0.5),y, x,y);
+    plotQuadBezierSeg(x0,y0, floor(r+0.5),y, x,y);
     r = (x1-x2)*(t-y2)/(y1-y2)+x2; /* intersect P7 | P1 P2 */
     x0 = x; x1 = floor(r+0.5); y0 = y1 = y; /* P0 = P6, P1 = P7 */
   }
-  plotQuadBezierSeg(mode, x0,y0, x1,y1, x2,y2); /* remaining part */
+  plotQuadBezierSeg(x0,y0, x1,y1, x2,y2); /* remaining part */
 }
 
 // https://stackoverflow.com/questions/31757501/pixel-by-pixel-b%C3%A9zier-curve
-void plotQuadBezierSeg(char mode, int x0, int y0, int x1, int y1, int x2, int y2)
+void plotQuadBezierSeg(int x0, int y0, int x1, int y1, int x2, int y2)
 { /* plot a limited quadratic Bezier segment */
   long sx = x2-x1, sy = y2-y1;
   long xx = x0-x1, yy = y0-y1, xy; /* relative values for checks */
@@ -121,18 +121,18 @@ void plotQuadBezierSeg(char mode, int x0, int y0, int x1, int y1, int x2, int y2
     dy = 4.0*sx*cur*(y0-y1)+yy-xy;
     xx += xx; yy += yy; err = dx+dy+xy; /* error 1st step */
     do {
-      vti_plot(mode,x0,y0); /* plot curve */
+      vti_plot(x0,y0); /* plot curve */
       if (x0 == x2 && y0 == y2) return; /* last pixel -> curve finished */
       y1 = 2*err < dx; /* save value for test of y step */
       if (2*err > dy) { x0 += sx; dx -= xy; err += dy += yy; } /* x step */
       if ( y1 ) { y0 += sy; dy -= xy; err += dx += xx; } /* y step */
     } while (dy < 0 && dx > 0); /* gradient negates -> algorithm fails */
   }
-  vti_line(mode,x0,y0, x2,y2); /* plot remaining part to end */
+  vti_line(x0,y0, x2,y2); /* plot remaining part to end */
 }
 
 // https://stackoverflow.com/questions/31757501/pixel-by-pixel-b%C3%A9zier-curve
-void plotCubicBezier(char mode, int x0, int y0, int x1, int y1, int x2, int y2, int x3, int y3)
+void plotCubicBezier(int x0, int y0, int x1, int y1, int x2, int y2, int x3, int y3)
 { /* plot any cubic Bezier curve */
   int n = 0, i = 0;
   long xc = x0+x1-x2-x3, xa = xc-4*(x1-x2);
@@ -172,13 +172,13 @@ void plotCubicBezier(char mode, int x0, int y0, int x1, int y1, int x2, int y2, 
     if (fx0 != 0.0) { fx1 *= fx0 = (x0-x3)/fx0; fx2 *= fx0; }
     if (fy0 != 0.0) { fy1 *= fy0 = (y0-y3)/fy0; fy2 *= fy0; }
     if (x0 != x3 || y0 != y3) /* segment t1 - t2 */
-      plotCubicBezierSeg(mode, x0,y0, x0+fx1,y0+fy1, x0+fx2,y0+fy2, x3,y3);
+      plotCubicBezierSeg(x0,y0, x0+fx1,y0+fy1, x0+fx2,y0+fy2, x3,y3);
     x0 = x3; y0 = y3; fx0 = fx3; fy0 = fy3; t1 = t2;
   }
 }
 
 // https://stackoverflow.com/questions/31757501/pixel-by-pixel-b%C3%A9zier-curve
-void plotCubicBezierSeg(char mode, int x0, int y0, float x1, float y1, float x2, float y2, int x3, int y3)
+void plotCubicBezierSeg(int x0, int y0, float x1, float y1, float x2, float y2, int x3, int y3)
 { /* plot limited cubic Bezier segment */
   int f, fx, fy, leg = 1;
   int sx = x0 < x3 ? 1 : -1, sy = y0 < y3 ? 1 : -1; /* step direction */
@@ -193,7 +193,7 @@ void plotCubicBezierSeg(char mode, int x0, int y0, float x1, float y1, float x2,
 
   if (xa == 0 && ya == 0) { /* quadratic Bezier */
     sx = floor((3*x1-x0+1)/2); sy = floor((3*y1-y0+1)/2); /* new midpoint */
-    return plotQuadBezierSeg(mode, x0,y0, sx,sy, x3,y3);
+    return plotQuadBezierSeg(x0,y0, sx,sy, x3,y3);
   }
   x1 = (x1-x0)*(x1-x0)+(y1-y0)*(y1-y0)+1; /* line lengths */
   x2 = (x2-x3)*(x2-x3)+(y2-y3)*(y2-y3)+1;
@@ -216,7 +216,7 @@ void plotCubicBezierSeg(char mode, int x0, int y0, float x1, float y1, float x2,
     ab = 6*ya*ac; ac = -6*xa*ac; bc = 6*ya*cb; cb = -6*xa*cb;
     dx += xy; ex = dx+dy; dy += xy; /* error of 1st step */
     for (pxy = &xy, fx = fy = f; x0 != x3 && y0 != y3; ) {
-      vti_plot(mode,x0,y0); /* plot curve */
+      vti_plot(x0,y0); /* plot curve */
       do { /* move sub-steps of one pixel */
         if (dx > *pxy || dy < *pxy) goto exit; /* confusing values */
         y1 = 2*ex-dy; /* save value for test of y step */
@@ -234,5 +234,5 @@ void plotCubicBezierSeg(char mode, int x0, int y0, float x1, float y1, float x2,
     exit: xx = x0; x0 = x3; x3 = xx; sx = -sx; xb = -xb; /* swap legs */
     yy = y0; y0 = y3; y3 = yy; sy = -sy; yb = -yb; x1 = x2;
   } while (leg--); /* try other end */
-  vti_line(mode, x0,y0, x3,y3); /* remaining part in case of cusp or crunode */
+  vti_line(x0,y0, x3,y3); /* remaining part in case of cusp or crunode */
 }
