@@ -2,12 +2,12 @@
 #include <string.h>
 
 unsigned char *vti_start = (unsigned char *) 0xf800;
-unsigned char vti_mode = 0;
-static unsigned char vti_pow0[] = {32, 16, 8};
-static unsigned char vti_pow1[] = {4,  2,  1};
+unsigned char vti_mode = VTI_MODE_SET;
+unsigned char vti_pow0[] = {32, 16, 8};
+unsigned char vti_pow1[] = {4,  2,  1};
 
 // precalculated table with address of row Y
-static unsigned int vti_row[48] = {
+unsigned int vti_row[48] = {
     0,   0,   0,  64,  64,  64, 128, 128, 128,
   192, 192, 192, 256, 256, 256, 320, 320, 320,
   384, 384, 384, 448, 448, 448, 512, 512, 512,
@@ -17,7 +17,7 @@ static unsigned int vti_row[48] = {
 };
 
 // precalculated table with Y % 3
-static unsigned char vti_mod[48] = {
+unsigned char vti_mod[48] = {
   0, 1, 2, 0, 1, 2, 0, 1, 2, 0, 1,
   2, 0, 1, 2, 0, 1, 2, 0, 1, 2, 0,
   1, 2, 0, 1, 2, 0, 1, 2, 0, 1, 2,
