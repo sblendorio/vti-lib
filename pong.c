@@ -31,7 +31,7 @@ char ball_x, ball_y, prev_ball_x, prev_ball_y, ball_step, dx, dy;
 unsigned int score_a, score_b;
 unsigned int seed;
 unsigned char count;
-unsigned char speed = 5;
+unsigned char speed = 7;
 
 char *boom =
     "....********...."
