@@ -44,7 +44,7 @@ void main(int argc, char *argv[]) {
     vti_print_at(0, 0, "Let's draw");
     m=0;
     for (k=0; k<5; ++k) {
-        vti_setmode(~k&1);
+        vti_setmode(k&1 ? VTI_MODE_RESET : VTI_MODE_SET);
         vti_boxfill(k, k+5, k+20, k+15);
     }
     vti_print_at(0, 14, "- PRESS A KEY TO CONTINUE -");
@@ -88,9 +88,9 @@ void main(int argc, char *argv[]) {
     // *************************************************************************
     vti_print_at(0, 0, "Let's test XOR mode");
     vti_ellipse_rect(7, 7, 40, 25);
-    vti_setmode(2);
+    vti_setmode(VTI_MODE_INVERT);
     for (k=0; k<2; ++k) vti_boxfill(5, 5, 42, 27);
-    vti_setmode(1);
+    vti_setmode(VTI_MODE_SET);
     vti_print_at(0, 14, "- PRESS A KEY TO CONTINUE -");
     get_key();
     for (i=0; i<16; ++i) {
