@@ -283,7 +283,7 @@ char get_key(void) {
     return ch;
 }
 
-void vti_c64char(unsigned char mode, unsigned int x,unsigned int y, unsigned char c) {
+void vti_c64char(unsigned int x,unsigned int y, unsigned char c) {
    static unsigned int xx;
    static unsigned int yy;
    static unsigned char *pos;
@@ -294,14 +294,14 @@ void vti_c64char(unsigned char mode, unsigned int x,unsigned int y, unsigned cha
    for(yy=0;yy<8;yy++) {
       bmp = *pos++;
       for(xx=0,b=128;xx<8;xx++,b/=2) {
-         if(bmp & b) vti_plot(mode,xx+x,yy+y);
+         if(bmp & b) vti_plot(xx+x,yy+y);
       }
    }
 }
 
-void vti_c64text(unsigned char mode, unsigned int x,unsigned int y, unsigned char *msg) {
+void vti_c64text(unsigned int x,unsigned int y, unsigned char *msg) {
 	while(*msg) {
-      vti_c64char(mode, x, y, asc2pet[*msg]);
+      vti_c64char(x, y, asc2pet[*msg]);
       x+=8;
       msg++;
 	}
@@ -320,14 +320,14 @@ void main(int argc, char *argv[]) {
 
    vti_clear_screen();
 
-   // screen is 16x6
-                     //1234567890123456
-   vti_c64text(1, 0,8*0     ,"** IMSAI 8080 **");
-   vti_c64text(1, 0,8*2     ," Hello World !!!");
-   vti_c64text(1, 0,8*4 -7  ,"     - from -   ");
-   vti_c64text(1, 0,8*5 -2  ,"   RETROCAMPUS  ");
+   // screen is 16x6:      1234567890123456
+   vti_c64text(0,8*0     ,"** IMSAI 8080 **");
+   vti_c64text(0,8*2     ," Hello World !!!");
+   vti_c64text(0,8*4 -7  ,"    - from -    ");
+   vti_c64text(0,8*5 -2  ,"   RETROCAMPUS  ");
 
-   vti_boxfill(2, 19,37,115,45);
+   vti_setmode(VTI_MODE_INVERT);
+   vti_boxfill(19,37,115,45);
 
    get_key();
 }
