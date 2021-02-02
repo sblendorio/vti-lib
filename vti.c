@@ -87,12 +87,62 @@ void vti_plot(unsigned int x, unsigned int y) {
     mask = sx == 0 ? vti_pow0[sy] : vti_pow1[sy];
     addr = vti_start + gx + vti_row[y];
 
-    value = *addr;
-    if (value & 0x80) value = 0x3f;
+    //value = *addr;
+    //if (value & 0x80) value = 0x3f;
+    // *addr =  vti_mode == VTI_MODE_RESET   ? value | mask    :
+    //          vti_mode == VTI_MODE_SET     ? value & (~mask) :
+    //        /*vti_mode == VTI_MODE_XOR*/     value ^ mask;
 
-    *addr =  vti_mode == VTI_MODE_RESET   ? value | mask    :
-             vti_mode == VTI_MODE_SET     ? value & (~mask) :
-           /*vti_mode == VTI_MODE_XOR*/     value ^ mask;
+    __asm
+        ; E: value
+        ; HL = addr
+
+        ld  a,(_st_vti_plot_addr)
+        ld  l,a
+        ld  a,(_st_vti_plot_addr+1)
+        ld  h,a                        ; HL = addr
+        ld  a, (hl)                    ;
+        ld  e, a                       ; e = *addr  (value = *addr)
+
+        and $80
+        jp  z, goodchar                ; if a and $80 == 0 then goto goodchar
+        ld  e, $3f                     ; e = $3f    (value=0x3f)
+    goodchar:
+        ld  a, (_vti_mode)
+        cp  0
+        jp  nz, case1
+        ld  a,(_st_vti_plot_mask)
+        or  e
+        ld  (hl),a
+        ret
+    case1:
+        cp  1
+        jp  nz, case2
+        ld  a,(_st_vti_plot_mask)
+        cpl
+        and e
+        ld  (hl),a
+        ret
+    case2:
+        ld  a,(_st_vti_plot_mask)
+        xor e
+        ld  (hl),a
+        ret
+    __endasm
+
+    //// *addr = value | mask;
+    //__asm
+    //    ld  a,(_st_vti_plot_addr)
+    //    ld  l,a
+    //    ld  a,(_st_vti_plot_addr+1)
+    //    ld  h,a
+    //    ld  a,(_st_vti_plot_value)
+    //    ld  e,a
+    //    ld  a,(_st_vti_plot_mask)
+    //    or e
+    //    ld  (hl),a
+    //__endasm;
+
 }
 
 unsigned char vti_read_pixel(unsigned int x, unsigned int y) {
