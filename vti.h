@@ -10,6 +10,7 @@
 #define VTI_MODE_SET    1
 #define VTI_MODE_INVERT 2
 #define vti_setmode(x) (vti_mode = (x))
+#define vti_getmode()  (vti_mode)
 
 extern unsigned char vti_mode;
 

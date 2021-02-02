@@ -209,7 +209,7 @@ void vti_put_shape(unsigned int x, unsigned int y, char *shape, unsigned int w, 
     static unsigned int xx, yy, ex, ey;
     static char ch;
     static unsigned char old_mode;
-    old_mode = vti_mode;
+    old_mode = vti_getmode();
     ex = x+w;
     ey = y+h;
     for (yy = y; yy < ey; ++yy) {
