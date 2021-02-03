@@ -78,18 +78,17 @@ void vti_clear_screen(void) {
 
 void vti_plot(unsigned int x, unsigned int y) {
     static unsigned char *addr;
-    static unsigned char xx, yy;
-    // static unsigned char sx, sy, mask, value, gx;
+    static unsigned char yy;
+    // static unsigned char xx, sx, sy, mask, value, gx;
 
     /*
     // the original routine in C:
     xx = (unsigned char) x;
-    yy = (unsigned char) y;
-
     if (xx > 127) return;
     sx = (xx & 1)*4;
     gx = xx >> 1;
 
+    yy = (unsigned char) y;
     if (yy > 47) return;
     sy = vti_mod[yy];
     mask = vti_pow[sx+sy];
@@ -103,12 +102,17 @@ void vti_plot(unsigned int x, unsigned int y) {
     else                                { *addr = value ^  mask; return; }
     */
 
-    xx = (unsigned char) x;
-    yy = (unsigned char) y;
+    //xx = (unsigned char) x;
+    __asm
+        ld hl, 4
+        add hl,sp
+        ld a,(hl)
+        ;ld (_st_vti_plot_xx),a
+    __endasm;
 
     // if (xx > 127) return;
     __asm
-        ld   a, (_st_vti_plot_xx)
+        ;ld   a, (_st_vti_plot_xx)
         ld   e, a    ; save xx into E
         and  $80
         ret  nz
@@ -130,9 +134,17 @@ void vti_plot(unsigned int x, unsigned int y) {
         ld   c,a     ; save gx into C
     __endasm;
 
+    //yy = (unsigned char) y;
+    __asm
+        ld hl, 2
+        add hl,sp
+        ld a,(hl)
+        ld (_st_vti_plot_yy),a
+    __endasm;
+
     // if (yy > 47) return;
     __asm
-        ld  a,(_st_vti_plot_yy)
+        ;ld  a,(_st_vti_plot_yy)
         cp  47
         ret nc
         ld  e, a                   ; save yy into E
