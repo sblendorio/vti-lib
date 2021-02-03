@@ -5,6 +5,7 @@ unsigned char *vti_start = (unsigned char *) 0xf800;
 unsigned char vti_mode = VTI_MODE_SET;
 unsigned char vti_pow0[] = {32, 16, 8};
 unsigned char vti_pow1[] = {4,  2,  1};
+unsigned char vti_pow[] = {32, 16, 8, 0,  4,  2,  1, 0};
 
 // precalculated table with address of row Y
 unsigned int vti_row[48] = {
@@ -77,34 +78,157 @@ void vti_clear_screen(void) {
 
 void vti_plot(unsigned int x, unsigned int y) {
     static unsigned char *addr;
-    static unsigned int gx;
-    static unsigned char sx, sy, mask, value;
+    static unsigned char xx, yy;
+    // static unsigned char sx, sy, mask, value, gx;
 
-    if (x > 127 || y > 47) return;
-    gx = x / 2;
-    sx = x % 2;
-    sy = vti_mod[y];
-    mask = sx == 0 ? vti_pow0[sy] : vti_pow1[sy];
-    addr = vti_start + gx + vti_row[y];
+    /*
+    // the original routine in C:
+    xx = (unsigned char) x;
+    yy = (unsigned char) y;
 
-    // The following lines are converted in assembly:
+    if (xx > 127) return;
+    sx = (xx & 1)*4;
+    gx = xx >> 1;
+
+    if (yy > 47) return;
+    sy = vti_mod[yy];
+    mask = vti_pow[sx+sy];
+
+    addr = vti_start + gx + vti_row[yy];
+
+    value = *addr;
+    if (value & 0x80) value = 0x3f;
+         if(vti_mode == VTI_MODE_RESET) { *addr = value |  mask; return; }
+    else if(vti_mode == VTI_MODE_SET)   { *addr = value & ~mask; return; }
+    else                                { *addr = value ^  mask; return; }
+    */
+
+    xx = (unsigned char) x;
+    yy = (unsigned char) y;
+
+    // if (xx > 127) return;
+    __asm
+        ld   a, (_st_vti_plot_xx)
+        ld   e, a    ; save xx into E
+        and  $80
+        ret  nz
+    __endasm;
+
+    // sx = (xx & 1)*4;
+    __asm
+        ld   a,e     ; gets xx from E
+        and  $01
+        rla
+        rla
+        ld   b,a     ; save sx into B
+    __endasm;
+
+    // gx = xx >> 1;
+    __asm
+        ld   a,e     ; gets xx from E
+        rra
+        ld   c,a     ; save gx into C
+    __endasm;
+
+    // if (yy > 47) return;
+    __asm
+        ld  a,(_st_vti_plot_yy)
+        cp  47
+        ret nc
+        ld  e, a                   ; save yy into E
+    __endasm;
+
+    // sy = vti_mod[yy];
+    __asm
+        ld h, _vti_mod / 256
+        ld l, _vti_mod % 256       ; HL = vti_mod
+        ld d, 0                    ; DE = yy
+        add hl, de
+        ld a, (hl)
+        ld e, a                    ; save sy into E
+    __endasm;
+
+    //mask = vti_pow[sx+sy];
+    __asm
+        ld h, _vti_pow / 256
+        ld l, _vti_pow % 256      ; HL = vti_pow
+
+        ld  a,b                   ; get sx from B
+        add e                     ; gets sy from E
+        ld  e,a
+        ld  d,0                   ; DE = sx*4 + sy
+        add hl,de
+        ld  a,(hl)
+        ld  b,a                   ; save mask into B
+    __endasm;
+
+    // addr = vti_start + gx + vti_row[yy];
+    __asm
+        ld   h, _vti_row / 256
+        ld   l, _vti_row % 256      ; HL = vti_row
+
+        ld   a, (_st_vti_plot_yy)
+        rla
+        ld   e,a
+        ld   d,0                    ; DE = yy*2
+
+        add  hl,de                  ; HL = ((unsigned char *)vti_row)[yy*2];
+
+        ld   a,(hl)
+        ld   e,a
+        inc  hl
+        ld   a,(hl)
+        ld   d,a                    ; DE = *HL = ((unsigned char *)vti_row)[yy*2];
+
+        ld   a,c                    ; gets gx from C
+        ld   l,a
+        ld   h,0                    ; HL = gx
+
+        add  hl,de                  ; HL = gx + ((unsigned char *)vti_row)[yy*2];
+
+        ld   a,l
+        ld   (_st_vti_plot_addr),a
+        ld   a,h
+        ld   (_st_vti_plot_addr+1),a ; addr = HL
+
+        ld   h, _vti_start / 256
+        ld   l, _vti_start % 256    ; HL = vti_start
+
+        ld   a, (hl)
+        ld   e, a
+        inc  hl
+        ld   a,(hl)
+        ld   d, a                   ; DE = vti_start
+
+        ld   a,(_st_vti_plot_addr)
+        ld   l,a
+        ld   a,(_st_vti_plot_addr+1)
+        ld   h,a
+
+        add  hl,de
+
+        ;HL holds addr so dont save in memory
+        ;ld   a,l
+        ;ld   (_st_vti_plot_addr),a
+        ;ld   a,h
+        ;ld   (_st_vti_plot_addr+1),a ; addr = HL
+
+    __endasm;
+
     // value = *addr;
     // if (value & 0x80) value = 0x3f;
-    //  *addr =  vti_mode == VTI_MODE_RESET   ? value | mask    :
-    //           vti_mode == VTI_MODE_SET     ? value & (~mask) :
-    //         /*vti_mode == VTI_MODE_XOR*/     value ^ mask;
-
-    // assembly translation
+    //      if(vti_mode == VTI_MODE_RESET) { *addr = value |  mask; return; }
+    // else if(vti_mode == VTI_MODE_SET)   { *addr = value & ~mask; return; }
+    // else                                { *addr = value ^  mask; return; }
     __asm
-        ; E holds keeps the "value" variable
-        ; HL holds "addr"
+        ; HL already holds addr
+        ;ld  a,(_st_vti_plot_addr)
+        ;ld  l,a
+        ;ld  a,(_st_vti_plot_addr+1)
+        ;ld  h,a                       ; HL = addr
 
-        ld  a,(_st_vti_plot_addr)
-        ld  l,a
-        ld  a,(_st_vti_plot_addr+1)
-        ld  h,a                        ; HL = addr
         ld  a, (hl)                    ;
-        ld  e, a                       ; e = *addr  (value = *addr)
+        ld  e, a                       ; save value in E
 
         and $80
         jp  z, goodchar                ; if a and $80 == 0 then goto goodchar
@@ -113,20 +237,20 @@ void vti_plot(unsigned int x, unsigned int y) {
         ld  a, (_vti_mode)
         cp  0
         jp  nz, case1
-        ld  a,(_st_vti_plot_mask)
+        ld  a,b                        ; B holds mask
         or  e
         ld  (hl),a
         ret
     case1:
         cp  1
         jp  nz, case2
-        ld  a,(_st_vti_plot_mask)
+        ld  a,b                        ; B holds mask
         cpl
         and e
         ld  (hl),a
         ret
     case2:
-        ld  a,(_st_vti_plot_mask)
+        ld  a,b                        ; B holds mask
         xor e
         ld  (hl),a
         ret
