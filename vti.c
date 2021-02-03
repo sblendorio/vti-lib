@@ -129,20 +129,6 @@ void vti_plot(unsigned int x, unsigned int y) {
         ld  (hl),a
         ret
     __endasm
-
-    //// *addr = value | mask;
-    //__asm
-    //    ld  a,(_st_vti_plot_addr)
-    //    ld  l,a
-    //    ld  a,(_st_vti_plot_addr+1)
-    //    ld  h,a
-    //    ld  a,(_st_vti_plot_value)
-    //    ld  e,a
-    //    ld  a,(_st_vti_plot_mask)
-    //    or e
-    //    ld  (hl),a
-    //__endasm;
-
 }
 
 unsigned char vti_read_pixel(unsigned int x, unsigned int y) {
