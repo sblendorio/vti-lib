@@ -31,7 +31,7 @@ char ball_x, ball_y, prev_ball_x, prev_ball_y, ball_step, dx, dy;
 unsigned int score_a, score_b;
 unsigned int seed;
 unsigned char count;
-unsigned char speed = 5;
+unsigned char speed = 7;
 
 char *boom =
     "....********...."
@@ -109,12 +109,14 @@ void main(int argc, char *argv[]) {
                         ++score_a;
                         vti_put_shape(100, 10, boom, 16, 10);
                         csleep(10);
-                        vti_boxfill(0,100, 10, 116, 20);
+                        vti_setmode(VTI_MODE_RESET);
+                        vti_boxfill(100, 10, 116, 20);
                     } else {
                         ++score_b;
                         vti_put_shape(11, 10, boom, 16, 10);
                         csleep(10);
-                        vti_boxfill(0,11, 10, 11+16, 20);
+                        vti_setmode(VTI_MODE_RESET);
+                        vti_boxfill(11, 10, 11+16, 20);
                     }
                     update_score();
                     randomize_ball();
@@ -144,7 +146,8 @@ char move_ball(void) {
     if (ball_x == UPPER_X) {
         #ifndef NOBARS
         if ((next_y < pos_b && next_y >= LOWER_Y) || (next_y >= pos_b + LEN && next_y <= UPPER_Y)) {
-            vti_plot(0, prev_ball_x, prev_ball_y);
+            vti_setmode(VTI_MODE_RESET);
+            vti_plot(prev_ball_x, prev_ball_y);
             return 1;
         }
         #endif
@@ -152,7 +155,8 @@ char move_ball(void) {
     } else if (ball_x == LOWER_X) {
         #ifndef NOBARS
         if ((next_y < pos_a && next_y >= LOWER_Y) || (next_y >= pos_a + LEN && next_y <= UPPER_Y)) {
-            vti_plot(0, prev_ball_x, prev_ball_y);
+            vti_setmode(VTI_MODE_RESET);
+            vti_plot(prev_ball_x, prev_ball_y);
             return 2;
         }
         #endif
@@ -166,38 +170,38 @@ char move_ball(void) {
     ball_x += dx;
     ball_y += dy;
 
-    vti_plot(1, ball_x, ball_y);
-    vti_plot(0, prev_ball_x, prev_ball_y);
+    vti_setmode(VTI_MODE_SET);   vti_plot(ball_x, ball_y);
+    vti_setmode(VTI_MODE_RESET); vti_plot(prev_ball_x, prev_ball_y);
 
     return 0;
 }
 
 void player1_up() {
     if (pos_a == LOWER_Y) return;
-    vti_plot(0, 0, pos_a + LEN);
+    vti_setmode(VTI_MODE_RESET); vti_plot(0, pos_a + LEN);
     --pos_a;
-    vti_plot(1, 0, pos_a);
+    vti_setmode(VTI_MODE_SET); vti_plot(0, pos_a);
 }
 
 void player1_down() {
     if (pos_a == 47-LEN) return;
-    vti_plot(0, 0, pos_a);
+    vti_setmode(VTI_MODE_RESET); vti_plot(0, pos_a);
     ++pos_a;
-    vti_plot(1, 0, pos_a + LEN);
+    vti_setmode(VTI_MODE_SET); vti_plot(0, pos_a + LEN);
 }
 
 void player2_up() {
     if (pos_b == LOWER_Y) return;
-    vti_plot(0, 127, pos_b + LEN);
+    vti_setmode(VTI_MODE_RESET); vti_plot(127, pos_b + LEN);
     --pos_b;
-    vti_plot(1, 127, pos_b);
+    vti_setmode(VTI_MODE_SET); vti_plot(127, pos_b);
 }
 
 void player2_down() {
     if (pos_b == 47-LEN) return;
-    vti_plot(0, 127, pos_b);
+    vti_setmode(VTI_MODE_RESET); vti_plot(127, pos_b);
     ++pos_b;
-    vti_plot(1, 127, pos_b + LEN);
+    vti_setmode(VTI_MODE_SET); vti_plot(127, pos_b + LEN);
 }
 
 void draw_field(void) {    score_a = score_b = 0;
@@ -209,13 +213,15 @@ void draw_field(void) {    score_a = score_b = 0;
     dx = 1;
     dy = 1;
 
+    vti_setmode(VTI_MODE_SET);
+    vti_plot(ball_x, ball_y);
+
     #ifndef NOBARS
-    vti_line(1, 0, pos_a, 0, pos_a+LEN);
-    vti_line(1, 127, pos_a, 127, pos_a+LEN);
+    vti_line(0, pos_a, 0, pos_a+LEN);
+    vti_line(127, pos_a, 127, pos_a+LEN);
     vti_center_at(0, "IMSAI Pong");
     update_score();
     #endif
-    vti_plot(1, ball_x, ball_y);
 }
 
 void update_score(void) {
@@ -231,7 +237,8 @@ void intro_screen(void) {
     static char buf[20];
     ch = ' ';
     vti_clear_screen();
-    vti_box(1, 2, 1, 125, 46);
+    vti_setmode(VTI_MODE_SET);
+    vti_box(2, 1, 125, 46);
     vti_center_at(1, "IMSAI Pong - (C) Francesco Sblendorio 2021");
     vti_center_at(2, "------------------------------------------");
     vti_center_at(4, "Keys");
