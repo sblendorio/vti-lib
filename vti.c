@@ -143,7 +143,7 @@ void vti_plot(unsigned int x, unsigned int y) {
     // if (yy > 47) return;
     __asm
         ;ld  a,(_st_vti_plot_yy)
-        cp  47
+        cp  48
         ret nc
         ld  e, a                   ; save yy into E
     __endasm;
