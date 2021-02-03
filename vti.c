@@ -3,8 +3,6 @@
 
 unsigned char *vti_start = (unsigned char *) 0xf800;
 unsigned char vti_mode = VTI_MODE_SET;
-unsigned char vti_pow0[] = {32, 16, 8};
-unsigned char vti_pow1[] = {4,  2,  1};
 unsigned char vti_pow[] = {32, 16, 8, 0,  4,  2,  1, 0};
 
 // precalculated table with address of row Y
@@ -276,7 +274,7 @@ unsigned char vti_read_pixel(unsigned int x, unsigned int y) {
     gx = x / 2;
     sx = x % 2;
     sy = vti_mod[y];
-    mask = sx == 0 ? vti_pow0[sy] : vti_pow1[sy];
+    mask = vti_pow[sx*4+sy];
     value = *(vti_start + gx + vti_row[y]);
     if (value & 0x80) value = 0x3f;
     return ~value & mask ? 1 : 0;
