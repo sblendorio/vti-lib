@@ -238,7 +238,7 @@ void intro_screen(void) {
     ch = ' ';
     vti_clear_screen();
     vti_setmode(VTI_MODE_SET);
-    vti_box(2, 1, 125, 46);
+    vti_box(0, 0, 127, 47);
     vti_center_at(1, "IMSAI Pong - (C) Francesco Sblendorio 2021");
     vti_center_at(2, "------------------------------------------");
     vti_center_at(4, "Keys");
