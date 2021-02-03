@@ -87,15 +87,17 @@ void vti_plot(unsigned int x, unsigned int y) {
     mask = sx == 0 ? vti_pow0[sy] : vti_pow1[sy];
     addr = vti_start + gx + vti_row[y];
 
-    //value = *addr;
-    //if (value & 0x80) value = 0x3f;
-    // *addr =  vti_mode == VTI_MODE_RESET   ? value | mask    :
-    //          vti_mode == VTI_MODE_SET     ? value & (~mask) :
-    //        /*vti_mode == VTI_MODE_XOR*/     value ^ mask;
+    // The following lines are converted in assembly:
+    // value = *addr;
+    // if (value & 0x80) value = 0x3f;
+    //  *addr =  vti_mode == VTI_MODE_RESET   ? value | mask    :
+    //           vti_mode == VTI_MODE_SET     ? value & (~mask) :
+    //         /*vti_mode == VTI_MODE_XOR*/     value ^ mask;
 
+    // assembly translation
     __asm
-        ; E: value
-        ; HL = addr
+        ; E holds keeps the "value" variable
+        ; HL holds "addr"
 
         ld  a,(_st_vti_plot_addr)
         ld  l,a
