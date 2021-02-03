@@ -4,7 +4,7 @@
 char get_key(void);
 
 void main(int argc, char *argv[]) {
-    int i,j,k,m;
+    int i,j,k;
     char ch;
     unsigned int base_address;
 
@@ -42,7 +42,7 @@ void main(int argc, char *argv[]) {
     // *************************************************************************
     vti_clear_screen();
     vti_print_at(0, 0, "Let's draw");
-    m=0;
+
     for (k=0; k<5; ++k) {
         vti_setmode(k&1 ? VTI_MODE_RESET : VTI_MODE_SET);
         vti_boxfill(k, k+5, k+20, k+15);
