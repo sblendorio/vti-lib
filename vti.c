@@ -196,10 +196,7 @@ void vti_plot(unsigned int x, unsigned int y) {
 
         add  hl,de                  ; HL = gx + ((unsigned char *)vti_row)[yy*2];
 
-        ld   a,l
-        ld   (_st_vti_plot_addr),a
-        ld   a,h
-        ld   (_st_vti_plot_addr+1),a ; addr = HL
+        ld   (_st_vti_plot_addr),hl
 
         ld   h, _vti_start / 256
         ld   l, _vti_start % 256    ; HL = vti_start
@@ -210,18 +207,12 @@ void vti_plot(unsigned int x, unsigned int y) {
         ld   a,(hl)
         ld   d, a                   ; DE = vti_start
 
-        ld   a,(_st_vti_plot_addr)
-        ld   l,a
-        ld   a,(_st_vti_plot_addr+1)
-        ld   h,a
+        ld   hl,(_st_vti_plot_addr)    ; addr = HL
 
         add  hl,de
 
         ;HL holds addr so dont save in memory
-        ;ld   a,l
-        ;ld   (_st_vti_plot_addr),a
-        ;ld   a,h
-        ;ld   (_st_vti_plot_addr+1),a ; addr = HL
+        ;ld  (_st_vti_plot_addr),hl    ; addr = HL
 
     __endasm;
 
@@ -232,10 +223,7 @@ void vti_plot(unsigned int x, unsigned int y) {
     // else                                { *addr = value ^  mask; return; }
     __asm
         ; HL already holds addr
-        ;ld  a,(_st_vti_plot_addr)
-        ;ld  l,a
-        ;ld  a,(_st_vti_plot_addr+1)
-        ;ld  h,a                       ; HL = addr
+        ;ld  hl,(_st_vti_plot_addr)
 
         ld  a, (hl)                    ;
         ld  e, a                       ; save value in E
