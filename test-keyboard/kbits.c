@@ -10,7 +10,7 @@ void set_port(int port) __z88dk_fastcall {
 unsigned char read_port() __z88dk_fastcall {
     #asm
 portsmc:
-    in a,(0x00)
+    in a,(0xf8)
     ld l,a
     ld h,0
     #endasm
