@@ -24,7 +24,7 @@ unsigned char vti_keyboard_pressed() {
     return read_port() & 0x80;
 }
 
-unsigned char bits[9];
+unsigned char bits[9],pbits[9] = {'-','-','-','-','-','-','-','-', 0};
 unsigned char c,last_read;
 unsigned char ch;
 
@@ -33,6 +33,7 @@ void main(void) {
     printf("Keyboard bit dump... press ESC to exit\r\n");
 
     bits[8] = 0;
+
     last_read = 69;
 
     while(1) {
@@ -51,11 +52,20 @@ void main(void) {
         bits[6] = c & (1<<1) ? '1' : '.';
         bits[7] = c & (1<<0) ? '1' : '.';
 
+        if(bits[0] == '1' && pbits[0] == '-') pbits[0] = 'X' ;
+        if(bits[1] == '1' && pbits[1] == '-') pbits[1] = 'X' ;
+        if(bits[2] == '1' && pbits[2] == '-') pbits[2] = 'X' ;
+        if(bits[3] == '1' && pbits[3] == '-') pbits[3] = 'X' ;
+        if(bits[4] == '1' && pbits[4] == '-') pbits[4] = 'X' ;
+        if(bits[5] == '1' && pbits[5] == '-') pbits[5] = 'X' ;
+        if(bits[6] == '1' && pbits[6] == '-') pbits[6] = 'X' ;
+        if(bits[7] == '1' && pbits[7] == '-') pbits[7] = 'X' ;
+
         ch = c & 0x7f;
         if(ch<32) ch=32;
 
-        printf("%s  raw=%3d  ascii=%3d char='%c'",bits,c,c & 0x7f,ch);
-        if(c&0x80) printf("  STROBE\r\n");
+        printf("%s %s raw=%3d asc=%3d ch='%c'",pbits,bits,c,c & 0x7f,ch);
+        if(c&0x80) printf(" STROBE\r\n");
         else printf("\r\n");
         if(c==27 || c==(27|0x80)) break;
     }
