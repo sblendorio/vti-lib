@@ -22,19 +22,25 @@ Here is sort of "hello world":
       vti_set_start(0xf800); // optional since 0xf800 is the default
       vti_clear_screen();
       
-      vti_line(1, 0, 0, 120, 45);   // segment with coords (0,0)-(120,45). "1" means "draw"
+      vti_setmode(1);            // "1" means "draw"
+      vti_line(0, 0, 120, 45);   // segment with coords (0,0)-(120,45).
       
-      vti_boxfill(1, 2, 3, 25, 25); // box filled with edges (2,3) and (25, 25). "1" means "draw"
-      vti_boxfill(0, 3, 4, 25, 25); // as above, but "0" means "erase"
+      vti_setmode(1);            // "1" means "draw"
+      vti_boxfill(2, 3, 25, 25); // box filled with edges (2,3) and (25, 25).
       
-      vti_boxfill(2, 1, 1, 10, 10); // box filled with edges (1,1)-(10,10). "2" means "XOR" for each pixel
+      vti_setmode(0);            // "0" means "erase"
+      vti_boxfill(3, 4, 25, 25); // as above, but "0" means "erase"
+      
+      vti_setmode(2);            // "2" means "XOR" for each pixel
+      vti_boxfill(1, 1, 10, 10); // box filled with edges (1,1)-(10,10). 
     }
 
 ## Function **vti_plot** and "mode" parameter
 
-Main function of the library is `vti_plot` which has the following prototype:
+Main function of the library is `vti_plot` in conjunction with `vti_setmode` which have the following prototype:
 
-    void vti_plot(char mode, int x, int y);
+    void vti_setmode(char mode);
+    void vti_plot(int x, int y);
 
 ...where **x** and **y** are cartesian coordinates with (0,0) as top-left origin and max values equal to (127,47).
 The parameter **mode** represents the way the dot is drawn, and can have the following values:
@@ -46,14 +52,15 @@ The parameter **mode** represents the way the dot is drawn, and can have the fol
 ## List of library's functions
 
 * vti_set_start(*\<start address\>*)
+* vti_setmode(*\<mode\>*)
 * vti_print_at(*\<x\>*, *\<y\>*, *"string"*);
 * vti_clear_screen()
 * vti_rawchar_at(*\<x\>*, *\<y\>*, *\<char\>*)
-* vti_plot(*\<mode\>*, *\<x\>*, *\<y\>*)
-* vti_line(*\<mode\>*, *\<x0\>*, *\<y0\>*, *\<x1\>*, *\<y1\>*)
-* vti_ellipse_rect(*\<mode\>*, *\<x0\>*, *\<y0\>*, *\<x1\>*, *\<y1\>*)
-* vti_box(*\<mode\>*, *\<x0\>*, *\<y0\>*, *\<x1\>*, *\<y1\>*)
-* vti_boxfill(*\<mode\>*, *\<x0\>*, *\<y0\>*, *\<x1\>*, *\<y1\>*)
+* vti_plot(*\<x\>*, *\<y\>*)
+* vti_line(*\<x0\>*, *\<y0\>*, *\<x1\>*, *\<y1\>*)
+* vti_ellipse_rect(*\<x0\>*, *\<y0\>*, *\<x1\>*, *\<y1\>*)
+* vti_box(*\<x0\>*, *\<y0\>*, *\<x1\>*, *\<y1\>*)
+* vti_boxfill(*\<x0\>*, *\<y0\>*, *\<x1\>*, *\<y1\>*)
 * vti_scroll_up(*\<number-of-rows\>*)
 * vti_scroll_down(*\<number-of-rows\>*)
 * vti_put_shape(*\<x\>*, *\<y\>*, char\*, *\<width\>*, *\<height\>*)
