@@ -37,7 +37,7 @@ Here is sort of "hello world":
 
 ## Function **vti_plot** and "mode" parameter
 
-Main function of the library is `vti_plot` in conjunction with `vti_setmode` which have the following prototype:
+Main function of the library is `vti_plot` in conjunction with `vti_setmode` which have the following prototypes:
 
     void vti_setmode(char mode);
     void vti_plot(int x, int y);
