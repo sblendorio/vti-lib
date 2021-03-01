@@ -150,8 +150,7 @@ void vti_plot(unsigned int x, unsigned int y) {
 
     // sy = vti_mod[yy];
     __asm
-        ld h, _vti_mod / 256
-        ld l, _vti_mod % 256       ; HL = vti_mod
+        ld hl, _vti_mod            ; HL = vti_mod
         ld d, 0                    ; DE = yy
         add hl, de
         ld a, (hl)
@@ -160,9 +159,7 @@ void vti_plot(unsigned int x, unsigned int y) {
 
     //mask = vti_pow[sx+sy];
     __asm
-        ld h, _vti_pow / 256
-        ld l, _vti_pow % 256      ; HL = vti_pow
-
+        ld hl, _vti_pow           ; HL = vti_pow
         ld  a,b                   ; get sx from B
         add e                     ; gets sy from E
         ld  e,a
@@ -174,8 +171,7 @@ void vti_plot(unsigned int x, unsigned int y) {
 
     // addr = vti_start + gx + vti_row[yy];
     __asm
-        ld   h, _vti_row / 256
-        ld   l, _vti_row % 256      ; HL = vti_row
+        ld   hl, _vti_row           ; HL = vti_row
 
         ld   a, (_st_vti_plot_yy)
         rla
@@ -198,8 +194,7 @@ void vti_plot(unsigned int x, unsigned int y) {
 
         ld   (_st_vti_plot_addr),hl
 
-        ld   h, _vti_start / 256
-        ld   l, _vti_start % 256    ; HL = vti_start
+        ld   hl, _vti_start         ; HL = vti_start
 
         ld   a, (hl)
         ld   e, a
