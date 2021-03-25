@@ -1,8 +1,6 @@
 #include <stdio.h>
 //__sfr __at (0xe8) VTI_KEYBOARD_PORT;
 
-
-
 void set_port(int port) __z88dk_fastcall {
     #asm
     ld a,l
@@ -73,31 +71,3 @@ void main(void) {
 
     printf("done\r\n");
 }
-
-/*
-old test
-void main(void) {
-    set_port(0xe8);
-    printf("Testing keyboard... press ESC to exit\r\n");
-
-    while(1) {
-
-        // loop if key is not pressed
-        // while(!vti_keyboard_pressed());
-
-        // waits for key pressed and counts the STROBE duration
-        unsigned int strobe_len = read_strobe_duration();
-        char c = vti_key_ascii();
-        printf("key ASCII %d code '%c' ...", c, c);
-
-        // loop if key is still pressed
-        while(vti_keyboard_pressed());
-
-        printf(" ok\r\n");
-
-        if(c==27) break;
-    }
-
-    printf("done\r\n");
-}
-*/
