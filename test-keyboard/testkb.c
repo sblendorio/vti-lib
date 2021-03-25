@@ -33,7 +33,7 @@ loop1:
     ; reset counter
     ld   hl,0
 
-loop2:
+loop2:   // 0x026b, the loop is 31 T-states on the Z80 (and 8080?)
     in   a,(0xe8)
     inc  hl
     rla
@@ -61,12 +61,13 @@ void main(void) {
 
     while(1) {
         // waits for a key press and counts the STROBE duration
-        unsigned int strobe_len = read_strobe_duration();
+        // the count loop lasts 31 T-states
+        unsigned int strobe_len = read_strobe_duration() * 31;
         // reads the key pressed
         char c = vti_key_ascii();
         ch = c;
         if(ch<32) ch=32;
-        printf("ASCII %3d char '%c' strobe dur=%d \r\n", c, ch, strobe_len);
+        printf("ASCII %3d char '%c' strobe dur=%u \r\n", c, ch, strobe_len);
         if(c==27) break;
     }
 
