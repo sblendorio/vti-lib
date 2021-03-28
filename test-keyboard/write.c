@@ -2,13 +2,17 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#define FLASH_CURSOR 0
+
 typedef unsigned char byte;
 typedef unsigned int word;
 
 byte X,Y;
 byte c;
 
+#if FLASH_CURSOR
 int flash_counter;
+#endif
 
 void hide_cursor() {
     vti_rawchar_at(X,Y,128+32);
@@ -77,19 +81,25 @@ void main(int argc, char *argv[]) {
     put_string("HOW ABOUT A NICE GAME OF CHESS?\r\r>");
 
     while(1) {
+        #if FLASH_CURSOR
         while(!vti_keypressed()) {
             if(flash_counter ==    0) show_cursor();
-            if(flash_counter ==  512) hide_cursor();
-            if(flash_counter == 1024) flash_counter = -1;
+            if(flash_counter == 2048) hide_cursor();
+            if(flash_counter == 4096) flash_counter = -1;
             flash_counter++;
         }
+        #endif
 
+        while(!vti_keypressed());
         c = vti_key_ascii();
         while(vti_keypressed());
 
         if(c==27) break;
         vti_putc(c);
+
+        #if FLASH_CURSOR
         flash_counter = 0;
+        #endif
     }
 
     printf("done\r\n");
