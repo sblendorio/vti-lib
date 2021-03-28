@@ -50,6 +50,10 @@ unsigned char vti_keypressed(void) {
     return vti_read_keyboard() & 0x80;
 }
 
+unsigned char vti_key_ascii(void) {
+    return vti_read_keyboard() & 0x7f;
+}
+
 void vti_set_start(unsigned int start) {
     vti_start = (unsigned char *) start;
     vti_set_keyboard_port(start >> 8);
