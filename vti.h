@@ -29,8 +29,11 @@ unsigned char vti_read_char(unsigned int x, unsigned int y);
 void vti_scroll_up(unsigned int n);
 void vti_scroll_down(unsigned int n);
 void vti_put_shape(unsigned int x, unsigned int y, char *shape, unsigned int w, unsigned int h);
+
+// VTI keyboard functions
 void vti_set_keyboard_port(unsigned int port);
 unsigned char vti_read_keyboard(void);
 unsigned char vti_keypressed(void);
+unsigned char vti_key_ascii(void);
 
 #endif
