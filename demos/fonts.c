@@ -299,7 +299,7 @@ void vti_c64char(unsigned int x,unsigned int y, unsigned char c) {
    }
 }
 
-void vti_c64text(unsigned int x,unsigned int y, unsigned char *msg) {
+void vti_c64text(unsigned int x, unsigned int y, char *msg) {
 	while(*msg) {
       vti_c64char(x, y, asc2pet[*msg]);
       x+=8;
