@@ -6,6 +6,7 @@
 #include <stdio.h>
 #include <ctype.h>
 #include <stdlib.h>
+#include <string.h>
 #include "vti.h"
 
 char intro_screen(void);
@@ -31,13 +32,14 @@ char play_win(void);
 char block_win(void);
 char play_third_in_sequence_of_two(char);
 void make_move_in_square(char, char);
-void perform_win_check(void);
 char prevent_fork_scenarios(void);
 void play_empty_side(void);
 char play_center(void);
 char play_opposite_corner(void);
 char play_empty_corner(void);
 void invert_board(void);
+void pause(long);
+void slow_print(char, char, char *);
 
 unsigned int seed;
 
@@ -55,7 +57,14 @@ char winpath[6];
 char next_move[2];
 
 char player_to_move;
-char game_is_complete;
+char matches;
+long interval;
+
+#define INTERVAL_INIT    500L
+#define INTERVAL_DELTA   100L
+#define INTERVAL_MESSAGE 800L
+#define INTERVAL_CHARS   180L
+#define INTERVAL_LINE    3000L
 
 void main(int argc, char *argv[]) {
     char ch;
@@ -74,63 +83,102 @@ void main(int argc, char *argv[]) {
 
     for(;;) {
         players_number = intro_screen();
+        interval = INTERVAL_INIT;
 
-        vti_clear_screen();
-        draw_board(players_number);
+        for (matches=0; (players_number == 0 & matches < 10) || (players_number != 0 && matches < 1); ++matches) {
+            vti_clear_screen();
+            draw_board(players_number);
 
-        init_board();
-        total_moves = 0;
-        t = 0;
-        do {
-            outcome = -1;
-            current_player = t+1;
-            print_turn(current_player);
+            init_board();
+            total_moves = 0;
+            t = 0;
+            do {
+                outcome = -1;
+                current_player = t+1;
+                print_turn(current_player);
 
-            if (players_number <= 1 && current_player == 2) {
-                invert_board();
-                player_to_move = current_player == 1 ? 2 : 1;
-                get_computer_move();
-                movex = next_move[0];
-                movey = next_move[1];
-                invert_board();
-            } else if (players_number == 0 && current_player == 1) {
-                player_to_move = current_player;
-                get_computer_move();
-                movex = next_move[0];
-                movey = next_move[1];
-            } else if (players_number == 2 || (players_number == 1 && current_player == 1)) {
-                move = get_digit();
-                if (move == 0) break;
-                movex = moveToX(move);
-                movey = moveToY(move);
-                if (!is_valid_move(movex, movey)) continue;
+                if (players_number <= 1 && current_player == 2) {
+                    if (players_number == 0) pause(interval);
+                    invert_board();
+                    player_to_move = current_player == 1 ? 2 : 1;
+                    get_computer_move();
+                    movex = next_move[0];
+                    movey = next_move[1];
+                    invert_board();
+                } else if (players_number == 0 && current_player == 1 && total_moves == 0) {
+                    movex = abs(rand()) % 3;
+                    movey = abs(rand()) % 3;
+                } else if (players_number == 0 && current_player == 1 && total_moves != 0) {
+                    if (players_number == 0) pause(interval);
+                    player_to_move = current_player;
+                    get_computer_move();
+                    movex = next_move[0];
+                    movey = next_move[1];
+                } else if (players_number == 2 || (players_number == 1 && current_player == 1)) {
+                    move = get_digit();
+                    if (move == 0) break;
+                    movex = moveToX(move);
+                    movey = moveToY(move);
+                    if (!is_valid_move(movex, movey)) continue;
+                }
+
+                draw_piece(current_player, movex, movey);
+                if (put_piece(current_player, movex, movey))
+                    ++total_moves;
+
+                t = 1-t;
+                outcome = game_winner();
+            } while (outcome == -1);
+            if (outcome == -1) continue;
+
+            vti_print_at(51, 7, "             ");
+            s = outcome == 0
+                ? "Match: draw" : outcome == 1
+                ? "Winner is X"
+                : "Winner is O";
+            vti_print_at(51, 7, s);
+
+            if (outcome > 0) show_win(outcome);
+
+            if (players_number != 0) {
+                vti_setmode(VTI_MODE_INVERT);
+                for (t=0; t<20; ++t)
+                    vti_box(99, 19, 127, 25);
+                vti_setmode(VTI_MODE_SET);
+                vti_box(99, 19, 127, 25);
+                get_key();
+            } else {
+                interval -= INTERVAL_DELTA;
+                if (interval < 0) interval = 0;
+                vti_setmode(VTI_MODE_SET);
+                vti_box(99, 19, 127, 25);
+                pause(INTERVAL_MESSAGE);
             }
-
-            draw_piece(current_player, movex, movey);
-            if (put_piece(current_player, movex, movey))
-                ++total_moves;
-
-            t = 1-t;
-            outcome = game_winner();
-        } while (outcome == -1);
-        if (outcome == -1) continue;
-
-        vti_print_at(51, 7, "             ");
-        s = outcome == 0
-            ? "Match: draw" : outcome == 1
-            ? "Winner is X"
-            : "Winner is O";
-        vti_print_at(51, 7, s);
-
-        if (outcome > 0) show_win(outcome);
-
-        vti_setmode(VTI_MODE_INVERT);
-        for (t=0; t<20; ++t)
-            vti_box(99, 19, 127, 25);
-        vti_setmode(VTI_MODE_SET);
-        vti_box(99, 19, 127, 25);
-
-        get_key();
+        }
+        if (players_number == 0) {
+            vti_save_screen();
+            for (t=0; t<20; ++t) {
+                vti_clear_screen();
+                pause(100);
+                vti_restore_screen();
+                pause(100);
+            }
+            vti_clear_screen();
+            vti_box(0, 0, 127, 47);
+            vti_box(1, 0, 126, 47);
+            pause(INTERVAL_LINE);
+            pause(INTERVAL_LINE);
+            slow_print(3, 2, "GREETINGS PROFESSOR FALKEN");
+            pause(INTERVAL_LINE);
+            slow_print(3, 4, "HELLO");
+            pause(INTERVAL_LINE);
+            slow_print(3, 6, "A STRANGE GAME.");
+            slow_print(3, 7, "THE ONLY WINNING MOVE IS");
+            slow_print(3, 8, "NOT TO PLAY.");
+            pause(INTERVAL_LINE);
+            slow_print(3, 10, "HOW ABOUT A NICE GAME OF CHESS?");
+            get_key();
+        }
     }
 }
 
@@ -500,13 +548,7 @@ void make_move_in_square( char row, char col ) {
     else if ( player_to_move == 2 )
         player_to_move = 1;
 
-    perform_win_check();                            // check for a win
     ++total_moves;                                  // count the move
-    if ( total_moves == 9 ) game_is_complete = 1;  // set the game to complete if # of moves is 9
-}
-
-void perform_win_check() {
-    if (game_winner() > 0) game_is_complete = 1;
 }
 
 char prevent_fork_scenarios() {
@@ -592,4 +634,20 @@ void invert_board(void) {
                 board[i][j] = 2;
             else if (board[i][j] == 2)
                 board[i][j] = 1;
+}
+
+void pause(long n) {
+    for (long i=0; i <= n; ++i) {
+        // do nothing
+    }
+}
+
+void slow_print(char x, char y, char *s) {
+    static char *msg = "A";
+    static char i;
+    for (i=0; i<strlen(s); ++i) {
+        msg[0] = s[i];
+        vti_print_at(x+i, y, msg);
+        pause(INTERVAL_CHARS);
+    }
 }

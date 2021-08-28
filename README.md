@@ -55,6 +55,8 @@ The parameter **mode** represents the way the dot is drawn, and can have the fol
 * vti_setmode(*\<mode\>*)
 * vti_print_at(*\<x\>*, *\<y\>*, *"string"*)
 * vti_clear_screen()
+* vti_save_screen()
+* vti_restore_screen()
 * vti_rawchar_at(*\<x\>*, *\<y\>*, *\<char\>*)
 * vti_plot(*\<x\>*, *\<y\>*)
 * vti_line(*\<x0\>*, *\<y0\>*, *\<x1\>*, *\<y1\>*)
@@ -89,6 +91,7 @@ There are the following demos (launch each of them eventually with the start add
 * **bezier.com**: drawing of the G-clef, using bezier curves
 * **fonts.com**: draw text with big letters
 * **lenna.com**: drawing of the famous test image https://en.wikipedia.org/wiki/Lenna
+* **ttt.com**: tic-tac-toe, inspired by [**War Games**](https://en.wikipedia.org/wiki/WarGames)
 
 <img src="lenna-photo.jpg" width="500" alt="Lenna demo" />
 
@@ -101,4 +104,4 @@ Thanks to:
 - [**Alois Zingl**](http://members.chello.at/~easyfilter/bresenham.html) for implementation of Bresenham's Algorithms (lines and curves drawing)
 - [**Andrea Matteucci**](https://www.facebook.com/andrewmattew81/) for hardware providing and fixing
 - [**Antonino Porcino**](https://github.com/nippur72) for a lot of code optimizazions and demos **lenna**, **fonts**
-
+- **Brian W. Howell** for Tic-Tac-Toe's AI logic
