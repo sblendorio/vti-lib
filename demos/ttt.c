@@ -40,6 +40,7 @@ char play_empty_corner(void);
 void invert_board(void);
 void pause(long);
 void slow_print(char, char, char *);
+void zero(void);
 
 unsigned int seed;
 
@@ -66,6 +67,8 @@ long interval;
 #define INTERVAL_CHARS   180L
 #define INTERVAL_LINE    3000L
 
+#define NUM_OF_MATCHES 10
+
 void main(int argc, char *argv[]) {
     char ch;
     char *s;
@@ -85,7 +88,11 @@ void main(int argc, char *argv[]) {
         players_number = intro_screen();
         interval = INTERVAL_INIT;
 
-        for (matches=0; (players_number == 0 & matches < 10) || (players_number != 0 && matches < 1); ++matches) {
+        if (players_number == 0) {
+            zero();
+        }
+
+        for (matches=0; (players_number == 0 & matches < NUM_OF_MATCHES) || (players_number != 0 && matches < 1); ++matches) {
             vti_clear_screen();
             draw_board(players_number);
 
@@ -650,4 +657,29 @@ void slow_print(char x, char y, char *s) {
         vti_print_at(x+i, y, msg);
         pause(INTERVAL_CHARS);
     }
+}
+
+void zero(void) {
+    vti_clear_screen();
+
+    vti_rawchar_at(0, 0, 0);
+    pause(3 * INTERVAL_CHARS);
+
+    vti_print_at(0, 0, "Z");
+    vti_rawchar_at(1, 0, 0);
+    pause(3 * INTERVAL_CHARS);
+
+    vti_print_at(0, 0, "ZE");
+    vti_rawchar_at(2, 0, 0);
+    pause(3 * INTERVAL_CHARS);
+
+    vti_print_at(0, 0, "ZER");
+    vti_rawchar_at(3, 0, 0);
+    pause(3 * INTERVAL_CHARS);
+
+    vti_print_at(0, 0, "ZERO");
+    vti_rawchar_at(4, 0, 0);
+    pause(3 * INTERVAL_CHARS);
+
+    pause(1 * INTERVAL_LINE);
 }
