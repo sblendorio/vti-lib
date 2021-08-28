@@ -60,6 +60,7 @@ char next_move[2];
 char player_to_move;
 char matches;
 long interval;
+char num_of_matches;
 
 #define INTERVAL_INIT    500L
 #define INTERVAL_DELTA   100L
@@ -84,6 +85,11 @@ void main(int argc, char *argv[]) {
         vti_set_start(base_address);
     }
 
+    num_of_matches = NUM_OF_MATCHES;
+    if (argc >= 3) {
+        num_of_matches = (char) atoi(argv[2]);
+    }
+
     for(;;) {
         players_number = intro_screen();
         interval = INTERVAL_INIT;
@@ -92,7 +98,7 @@ void main(int argc, char *argv[]) {
             zero();
         }
 
-        for (matches=0; (players_number == 0 & matches < NUM_OF_MATCHES) || (players_number != 0 && matches < 1); ++matches) {
+        for (matches=0; (players_number == 0 & matches < num_of_matches) || (players_number != 0 && matches < 1); ++matches) {
             vti_clear_screen();
             draw_board(players_number);
 
@@ -113,6 +119,7 @@ void main(int argc, char *argv[]) {
                     movey = next_move[1];
                     invert_board();
                 } else if (players_number == 0 && current_player == 1 && total_moves == 0) {
+                    if (players_number == 0) pause(interval);
                     movex = abs(rand()) % 3;
                     movey = abs(rand()) % 3;
                 } else if (players_number == 0 && current_player == 1 && total_moves != 0) {
@@ -171,6 +178,8 @@ void main(int argc, char *argv[]) {
                 pause(100);
             }
             vti_clear_screen();
+            pause(INTERVAL_LINE);
+            pause(INTERVAL_LINE);
             vti_box(0, 0, 127, 47);
             vti_box(1, 0, 126, 47);
             pause(INTERVAL_LINE);
@@ -663,7 +672,7 @@ void zero(void) {
     vti_clear_screen();
 
     vti_rawchar_at(0, 0, 0);
-    pause(3 * INTERVAL_CHARS);
+    pause(1 * INTERVAL_LINE);
 
     vti_print_at(0, 0, "Z");
     vti_rawchar_at(1, 0, 0);
