@@ -62,6 +62,7 @@ char player_to_move;
 char matches;
 long interval;
 char num_of_matches;
+char final_border;
 
 #define INTERVAL_INIT    500L
 #define INTERVAL_DELTA   100L
@@ -69,6 +70,7 @@ char num_of_matches;
 #define INTERVAL_CHARS   180L
 #define INTERVAL_LINE    3000L
 
+#define FINAL_BORDER 0
 #define NUM_OF_MATCHES 10
 
 char *strategies[] = {
@@ -252,6 +254,11 @@ void main(int argc, char *argv[]) {
         num_of_matches = (char) atoi(argv[2]);
     }
 
+    final_border = FINAL_BORDER;
+    if (argc >= 4) {
+        final_border = (char) atoi(argv[3]);
+    }
+
     for(;;) {
         players_number = intro_screen();
         interval = INTERVAL_INIT;
@@ -347,9 +354,11 @@ void main(int argc, char *argv[]) {
             pause(INTERVAL_LINE);
             pause(INTERVAL_LINE);
             show_strategies();
-            vti_box(0, 0, 127, 47);
-            vti_box(1, 0, 126, 47);
-            pause(INTERVAL_LINE);
+            if (final_border) {
+                vti_box(0, 0, 127, 47);
+                vti_box(1, 0, 126, 47);
+                pause(INTERVAL_LINE);
+            }
             pause(INTERVAL_LINE);
             slow_print(3, 2, "GREETINGS PROFESSOR FALKEN");
             pause(INTERVAL_LINE);
