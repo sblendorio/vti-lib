@@ -30,28 +30,49 @@ int vti_abs(int x) {
     return x < 0 ? -x : x;
 }
 
+unsigned int vti_keyboard_counter;
+unsigned int vti_keyboard_counter_max;
+
 void vti_set_keyboard_port(unsigned int port) __z88dk_fastcall {
-#asm
+    #asm
     ld a,l
     ld (portsmc+1),a
-#endasm
+    #endasm
+
+    vti_keyboard_counter = 1;
 }
 
+unsigned char vti_key;
 unsigned char vti_read_keyboard(void) __z88dk_fastcall {
 #asm
 portsmc:
     in a,(0xf8)
+    ld (_vti_key),a
     ld l,a
     ld h,0
 #endasm
 }
 
 unsigned char vti_keypressed(void) {
-    return vti_read_keyboard() & 0x80;
+    return vti_key & 0x80;
 }
 
 unsigned char vti_key_ascii(void) {
-    return vti_read_keyboard() & 0x7f;
+    return vti_key & 0x7f;
+}
+
+unsigned char vti_get_key() {
+    if(vti_keyboard_counter--==0) {
+        vti_keyboard_counter = vti_keyboard_counter_max;
+        vti_read_keyboard();
+    }
+    if((vti_key & 0x80)==0) return 0; // no key is pressed
+    return vti_key & 0x7f;
+}
+
+void vti_sleep(unsigned int duration) {
+    unsigned int counter;
+    while(counter++ < duration);
 }
 
 void vti_set_start(unsigned int start) {
@@ -72,6 +93,10 @@ void vti_center_at(unsigned int y, char *msg) {
 
 void vti_rawchar_at(unsigned int x, unsigned int y, char ch) {
 	*(vti_start + x + (VTI_WIDTH*y)) = ch;
+}
+
+unsigned char vti_get_rawchar_at(unsigned int x, unsigned int y) {
+	return *(vti_start + x + (VTI_WIDTH*y));
 }
 
 void vti_clear_screen(void) {

@@ -13,12 +13,15 @@
 #define vti_getmode()  (vti_mode)
 
 extern unsigned char vti_mode;
+extern unsigned int vti_keyboard_counter_max;
+extern unsigned int vti_keyboard_counter;
 
 void vti_set_start(unsigned int start);
 void vti_print_at(unsigned int x, unsigned int y, char *msg);
 void vti_center_at(unsigned int y, char *msg);
 void vti_clear_screen(void);
 void vti_rawchar_at(unsigned int x, unsigned int y, char ch);
+unsigned char vti_get_rawchar_at(unsigned int x, unsigned int y);
 void vti_plot(unsigned int x, unsigned int y);
 void vti_line(unsigned int x0, unsigned int y0, unsigned int x1, unsigned int y1);
 void vti_ellipse_rect(unsigned int x0, unsigned int y0, unsigned int x1, unsigned int y1);
@@ -35,5 +38,7 @@ void vti_set_keyboard_port(unsigned int port);
 unsigned char vti_read_keyboard(void);
 unsigned char vti_keypressed(void);
 unsigned char vti_key_ascii(void);
+unsigned char vti_get_key();
+void vti_sleep(unsigned int duration);
 
 #endif

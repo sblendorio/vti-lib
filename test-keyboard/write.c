@@ -1,106 +1,75 @@
-#include <vti.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <strings.h>
 
-#define FLASH_CURSOR 0
+#include <vti.h>
+
+#include "console.h"
 
 typedef unsigned char byte;
 typedef unsigned int word;
 
-byte X,Y;
-byte c;
-
-#if FLASH_CURSOR
 int flash_counter;
-#endif
 
-void hide_cursor() {
-    vti_rawchar_at(X,Y,128+32);
-}
-
-void show_cursor() {
-    vti_rawchar_at(X,Y,0);
-}
-
-void advance_Y() {
-    Y++;
-    if(Y==VTI_HEIGHT) {
-        Y--;
-        vti_scroll_up(1);
-    }
-}
-
-void vti_putc(byte c) {
-    hide_cursor();
-    if(c==13) {
-        // CR
-        X=0;
-        advance_Y();
-    }
-    else if(c==8||c==127) {
-        // BACKSPACE or DEL
-        if(X>0) X--;
-    }
-    else {
-        vti_rawchar_at(X,Y,c|128);
-        X++;
-        if(X==VTI_WIDTH) {
-            X=0;
-            advance_Y();
-        }
-    }
-    show_cursor();
-}
-
-void put_string(char *message) {
+void put_string_delay(char *message) {
     while(*message) {
-       vti_putc(*message++);
-       for(int t=0;t<600;t++) {
+       vti_console_putc(*message++);
+       for(int t=0;t<300;t++) {
            t=t;
        }
     }
 }
 
+word steps;
+word sleep;
+
+unsigned char line[VTI_WIDTH+1];
+
 void main(int argc, char *argv[]) {
     unsigned int base_address;
 
     // use a numeric argument to set the video memory start address
-    if (argc >= 2) {
+    if (argc == 4) {
         base_address = (unsigned int) atoi(argv[1]);
         if(base_address == 0) base_address = 0xe800;
         vti_set_start(base_address);
+        steps = atoi(argv[2]);
+        sleep = atoi(argv[3]);
+    }
+    else {
+        //printf("Usage: write <videoram>\r\n");
+        //printf("       videoram: address of VTI VRAM (59392, 49152, ...)\r\n");
+        printf("Usage: write <videoram> <steps> <sleep>\r\n");
+        printf("       videoram: address of VTI VRAM (59392, 49152, ...)\r\n");
+        printf("       steps: read keyboard every n steps\r\n");
+        printf("       sleep: time to wait after they key has registered\r\n\r\n");
+        printf("Example: write 59392 20 400\r\n");
+        return;
     }
 
-    vti_clear_screen();
+    vti_console_putc(12); // clear screen
 
-    X = 0;
-    Y = 0;
+    vti_console_puts("GREETINGS, PROFESSOR FALKEN\r\r");
+    vti_console_puts("A STRANGE GAME.\rTHE ONLY WINNING MOVE IS\rNOT TO PLAY.\r\r");
+    vti_console_puts("HOW ABOUT A NICE GAME OF CHESS?\r\r>");
 
-    put_string("GREETINGS, PROFESSOR FALKEN\r\r");
-    put_string("A STRANGE GAME.\rTHE ONLY WINNING MOVE IS\rNOT TO PLAY.\r\r");
-    put_string("HOW ABOUT A NICE GAME OF CHESS?\r\r>");
+    vti_keyboard_counter_max = steps;
 
     while(1) {
-        #if FLASH_CURSOR
-        while(!vti_keypressed()) {
-            if(flash_counter ==    0) show_cursor();
-            if(flash_counter == 2048) hide_cursor();
-            if(flash_counter == 4096) flash_counter = -1;
-            flash_counter++;
-        }
-        #endif
 
-        while(!vti_keypressed());
-        c = vti_key_ascii();
-        while(vti_keypressed());
+        unsigned char c = vti_console_inputs(line);
 
         if(c==27) break;
-        vti_putc(c);
-
-        #if FLASH_CURSOR
-        flash_counter = 0;
-        #endif
+        if(c==13) {
+            if(strlen(line)!=0) {
+                vti_console_puts("Why did you say: '");
+                vti_console_puts(line);
+                vti_console_puts("' ? \r");
+            }
+            vti_console_puts("> ");
+        }
     }
 
     printf("done\r\n");
 }
+
