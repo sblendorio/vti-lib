@@ -22,16 +22,16 @@ Here is sort of "hello world":
       vti_set_start(0xf800); // optional since 0xf800 is the default
       vti_clear_screen();
       
-      vti_setmode(1);            // "1" means "draw"
+      vti_setmode(1);            // "1" (or VTI_MODE_SET) means "draw"
       vti_line(0, 0, 120, 45);   // segment with coords (0,0)-(120,45).
       
-      vti_setmode(1);            // "1" means "draw"
+      vti_setmode(1);            // "1" (or VTI_MODE_SET) means "draw"
       vti_boxfill(2, 3, 25, 25); // box filled with edges (2,3) and (25, 25).
       
-      vti_setmode(0);            // "0" means "erase"
+      vti_setmode(0);            // "0" (or VTI_MODE_RESET) means "erase"
       vti_boxfill(3, 4, 25, 25); // as above, but "0" means "erase"
       
-      vti_setmode(2);            // "2" means "XOR" for each pixel
+      vti_setmode(2);            // "2" (or VTI_MODE_INVERT) means "XOR" for each pixel
       vti_boxfill(1, 1, 10, 10); // box filled with edges (1,1)-(10,10). 
     }
 
@@ -45,9 +45,9 @@ Main function of the library is `vti_plot` in conjunction with `vti_setmode` whi
 ...where **x** and **y** are cartesian coordinates with (0,0) as top-left origin and max values equal to (127,47).
 The parameter **mode** represents the way the dot is drawn, and can have the following values:
 
-* **0 = ERASE**. It erases the dot at specified coordinates, making it *black*.
-* **1 = DRAW**. It draws the dot, making it *white*.
-* **2 = XOR**. It draws the dot if it's currently off (=black), and erases it if it's currently on (=white)
+* **0 = VTI_MODE_RESET**. It erases the dot at specified coordinates, making it *black*.
+* **1 = VTI_MODE_SET**. It draws the dot, making it *white*.
+* **2 = VTI_MODE_INVERT**. It draws the dot if it's currently off (=black), and erases it if it's currently on (=white)
 
 ## List of library's functions
 
@@ -55,6 +55,7 @@ The parameter **mode** represents the way the dot is drawn, and can have the fol
 * vti_setmode(*\<mode\>*)
 * vti_print_at(*\<x\>*, *\<y\>*, *"string"*)
 * vti_clear_screen()
+* vti_fill_screen(*\<char\>*);
 * vti_save_screen()
 * vti_restore_screen()
 * vti_rawchar_at(*\<x\>*, *\<y\>*, *\<char\>*)

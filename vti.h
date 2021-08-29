@@ -18,6 +18,7 @@ void vti_set_start(unsigned int start);
 void vti_print_at(unsigned int x, unsigned int y, char *msg);
 void vti_center_at(unsigned int y, char *msg);
 void vti_clear_screen(void);
+void vti_fill_screen(char);
 void vti_rawchar_at(unsigned int x, unsigned int y, char ch);
 void vti_plot(unsigned int x, unsigned int y);
 void vti_line(unsigned int x0, unsigned int y0, unsigned int x1, unsigned int y1);

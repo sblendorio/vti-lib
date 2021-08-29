@@ -177,6 +177,8 @@ void main(int argc, char *argv[]) {
                 vti_restore_screen();
                 pause(100);
             }
+            vti_fill_screen(0);
+            pause(500);
             vti_clear_screen();
             pause(INTERVAL_LINE);
             pause(INTERVAL_LINE);

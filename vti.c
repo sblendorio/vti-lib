@@ -24,7 +24,7 @@ unsigned char vti_mod[48] = {
   2, 0, 1, 2
 };
 
-char vti_screen_buffer[1024];
+char vti_screen_buffer[VTI_WIDTH * VTI_HEIGHT];
 
 int vti_abs(int x);
 
@@ -389,4 +389,8 @@ void vti_save_screen(void) {
 
 void vti_restore_screen(void) {
     memcpy(vti_start, vti_screen_buffer, VTI_WIDTH * VTI_HEIGHT);
+}
+
+void vti_fill_screen(char c) {
+    memset(vti_start, c, VTI_PAGESIZE);
 }
