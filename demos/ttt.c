@@ -357,8 +357,8 @@ void main(int argc, char *argv[]) {
             if (final_border) {
                 vti_box(0, 0, 127, 47);
                 vti_box(1, 0, 126, 47);
-                pause(INTERVAL_LINE);
             }
+            pause(INTERVAL_LINE);
             pause(INTERVAL_LINE);
             slow_print(3, 2, "GREETINGS PROFESSOR FALKEN");
             pause(INTERVAL_LINE);
