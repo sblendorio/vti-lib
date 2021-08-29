@@ -21,9 +21,9 @@ void print_turn(char);
 char is_valid_move(char, char);
 char put_piece(char, char, char);
 char game_winner(void);
-char rowWins(void);
-char colWins(void);
-char diagWins(void);
+char row_wins(void);
+char col_wins(void);
+char diag_wins(void);
 void gridCopy(char[][3] destination, char[][3] source);
 void show_win(char);
 void get_computer_move(void);
@@ -41,6 +41,7 @@ void invert_board(void);
 void pause(long);
 void slow_print(char, char, char *);
 void zero(void);
+void show_strategies(void);
 
 unsigned int seed;
 
@@ -69,6 +70,167 @@ char num_of_matches;
 #define INTERVAL_LINE    3000L
 
 #define NUM_OF_MATCHES 10
+
+char *strategies[] = {
+    "USSR FIRST STRIKE",
+    "U.S. FIRST STRIKE",
+    "NATO / WARSAW PACT",
+    "FAR EAST STRATEGY",
+    "US USSR ESCALATION",
+    "MIDDLE EAST WAR",
+    "INDIA PAKISTAN WAR",
+    "MEDITERRANEAN WAR",
+    "HONGKONG VARIANT",
+    "SEATO DECAPITATING",
+    "CUBAN PROVOCATION",
+    "INADVERTANT LAUNCH",
+    "[ILLEG.] BLACKOUT",
+    "ATLANTIC HEAVY",
+    "CUBAN PARAMILITARY",
+    "NICARAGUAN PREEMPTIVE",
+    "PACIFIC TERRITORIAL",
+    "BURMESE THEATERWIDE",
+    "TURKISH DECOY",
+    "NATO LIGHT",
+    "ANGENTINA ESCALATION",
+    "ICELAND MAXIMUM",
+    "ARABIAN THEATERWIDE",
+    "U.S. SUBVERSION",
+    "AUSTRALIAN MANEUVER",
+    "ARABIAN DIVERSION",
+    "NORWAY LIMITED",
+    "SUDAN SURPRISE",
+    "NATO TERRITORIAL",
+    "ZAIRE ALLIANCE",
+    "ICELAND INCIDENT",
+    "ENGLISH ESCALATION",
+    "ZAIRE SUDDEN",
+    "EGYPT PARAMILITARY",
+    "MIDDLE EAST HEAVY",
+    "MEXICAN TAKEOVER",
+    "CHAD ALERT",
+    "SAUDI MANEUVER",
+    "AFRICAN TERRITORIAL",
+    "ETHIOPIAN ESCALATION",
+    "CANADIAN [ILLEG.]",
+    "TURKISH HEAVY",
+    "NATO INCURSION",
+    "U.S. DEFENSE",
+    "CAMBODIAN HEAVY",
+    "PACT MEDIUM",
+    "ARCTIC MINIMAL",
+    "MEXICAN DOMESTIC",
+    "TAIWAN THEATERWIDE",
+    "PACIFIC MANEUVER",
+    "PORTUGAL REVOLUTION",
+    "ALBANIAN DECOY",
+    "PALISTINIAN LOCAL",
+    "MOROCCAN MINIMAL",
+    "HUNGARIAN DIVERSION",
+    "CZECH OPTION",
+    "FRENCH ALLIANCE",
+    "ARABIAN CLANDESTINE",
+    "GABON REBELLION",
+    "NORTHERN MAXIMUM",
+    "AUSTRIAN SUPRISE",
+    "NORTHERN MAXIMUM",
+    "IRISH PARAMILITARY",
+    "SEATO TAKEOVER",
+    "HAWAIIAN ESCALATION",
+    "IRANIAN MANEUVER",
+    "NATO CONTAINMENT",
+    "SWISS INCIDENT",
+    "CUBAN MINIMAL",
+    "CHAD ALERT",
+    "ICELAND ESCALATION",
+    "VIETNAMESE RETALIATION",
+    "SYRIAN PROVOCATION",
+    "LIBYAN LOCAL",
+    "GABON TAKEOVER",
+    "ROMANIAN WAR",
+    "MIDDLE EAST OFFENSIVE",
+    "DENMARK MASSIVE",
+    "CHILE CONFRONTATION",
+    "S.AFRICAN SUBVERSION",
+    "USSR ALERT",
+    "NICARAGUAN THRUST",
+    "GREENLAND DOMESTIC",
+    "ICELAND HEAVY",
+    "KENYA OPTION",
+    "PACIFIC DEFENSE",
+    "UGANDA MAXIMUM",
+    "THAI SUBVERSION",
+    "ROMANIAN STRIKE",
+    "PAKISTAN SOVEREIGNTY",
+    "AFGHAN MISDIRECTION",
+    "THAI VARIATION",
+    "NORTHERN TERRITORIAL",
+    "POLISH PARAMILITARY",
+    "S.AFRICAN OFFENSIVE",
+    "PANAMA MISDIRECTION",
+    "SCANDINAVIAN DOMESTIC",
+    "JORDAN PREEMPTIVE",
+    "ENGLISH THRUST",
+    "BURMESE MANEUVER",
+    "SPAIN COUNTER",
+    "ARABIAN OFFENSIVE",
+    "CHAD INTERDICTION",
+    "TAIWAN MISDIRECTION",
+    "BANGLADESH THEATERWIDE",
+    "ETHIOPIAN LOCAL",
+    "ITALIAN TAKEOVER",
+    "VIETNAMESE INCIDENT",
+    "ENGLISH PREEMPTIVE",
+    "DENMARK ALTERNATE",
+    "THAI CONFRONTATION",
+    "TAIWAN SURPRISE",
+    "BRAZILIAN STRIKE",
+    "VENEZUELA SUDDEN",
+    "MAYLASIAN ALERT",
+    "ISREAL DISCRETIONARY",
+    "LIBYAN ACTION",
+    "PALISTINIAN TACTICAL",
+    "NATO ALTERNATE",
+    "CYPRESS MANEUVER",
+    "EGYPT MISDIRECTION",
+    "BANGLADESH THRUST",
+    "KENYA DEFENSE",
+    "BANGLADESH CONTAINMENT",
+    "VIETNAMESE STRIKE",
+    "ALBANIAN CONTAINMENT",
+    "GABON SURPRISE",
+    "IRAQ SOVEREIGNTY",
+    "VIETNAMESE SUDDEN",
+    "LEBANON INTERDICTION",
+    "TAIWAN DOMESTIC",
+    "ALGERIAN SOVEREIGNTY",
+    "ARABIAN STRIKE",
+    "ATLANTIC SUDDEN",
+    "MONGOLIAN THRUST",
+    "POLISH DECOY",
+    "ALASKAN DISCRETIONARY",
+    "CANADIAN THRUST",
+    "ARABIAN LIGHT",
+    "S.AFRICAN DOMESTIC",
+    "TUNISIAN INCIDENT",
+    "MAYLASIAN MANEUVER",
+    "JAMAICA DECOY",
+    "MAYLASIAN MINIMAL",
+    "RUSSIAN SOVEREIGNTY",
+    "CHAD OPTION",
+    "BANGLADESH WAR",
+    "BURMESE CONTAINMENT",
+    "ASIAN THEATERWIDE",
+    "BULGARIAN CLANDESTINE",
+    "GREENLAND INCURSION",
+    "EGYPT SURGICAL",
+    "CZECH HEAVY",
+    "TAIWAN CONFRONTATION",
+    "GREENLAND MAXIMUM",
+    "UGANDA OFFENSIVE",
+    "CASPIAN DEFENSE",
+    NULL
+};
 
 void main(int argc, char *argv[]) {
     char ch;
@@ -108,6 +270,8 @@ void main(int argc, char *argv[]) {
             do {
                 outcome = -1;
                 current_player = t+1;
+
+                //if (players_number > 0)
                 print_turn(current_player);
 
                 if (players_number <= 1 && current_player == 2) {
@@ -147,7 +311,7 @@ void main(int argc, char *argv[]) {
 
             vti_print_at(51, 7, "             ");
             s = outcome == 0
-                ? "Match: draw" : outcome == 1
+                ? " STALEMATE." : outcome == 1
                 ? "Winner is X"
                 : "Winner is O";
             vti_print_at(51, 7, s);
@@ -165,7 +329,7 @@ void main(int argc, char *argv[]) {
                 interval -= INTERVAL_DELTA;
                 if (interval < 0) interval = 0;
                 vti_setmode(VTI_MODE_SET);
-                vti_box(99, 19, 127, 25);
+                // vti_box(99, 19, 127, 25);
                 pause(INTERVAL_MESSAGE);
             }
         }
@@ -178,10 +342,11 @@ void main(int argc, char *argv[]) {
                 pause(100);
             }
             vti_fill_screen(0);
-            pause(500);
+            pause(700);
             vti_clear_screen();
             pause(INTERVAL_LINE);
             pause(INTERVAL_LINE);
+            show_strategies();
             vti_box(0, 0, 127, 47);
             vti_box(1, 0, 126, 47);
             pause(INTERVAL_LINE);
@@ -209,8 +374,8 @@ char intro_screen(void) {
     vti_box(0, 0, 127, 47);
     vti_box(1, 0, 1,   47);
     vti_box(126,0, 126,47);
-    vti_center_at(1, "IMSAI TIC-TAC-TOE ... Inspired by War Games");
-    vti_center_at(2, "-------------------------------------------");
+    vti_center_at(1, "Professor Falken's TIC-TAC-TOE for IMSAI 8080");
+    vti_center_at(2, "---------------------------------------------");
     vti_center_at(3, "How many players?");
     vti_center_at(12, "PRESS \".\" TO EXIT");
     vti_center_at(14, "(C) Francesco Sblendorio 2021");
@@ -343,22 +508,22 @@ char is_valid_move(char x, char y) {
 }
 
 char game_winner(void) {
-    char rowWin, colWin, diagWin;
+    char row_win, col_win, diag_win;
     
-    rowWin = rowWins();
-    if (rowWin) return rowWin;
+    row_win = row_wins();
+    if (row_win) return row_win;
 
-    colWin = colWins();
-    if (colWin) return colWin;
+    col_win = col_wins();
+    if (col_win) return col_win;
 
-    diagWin = diagWins();
-    if (diagWin) return diagWin;
+    diag_win = diag_wins();
+    if (diag_win) return diag_win;
 
     if (total_moves == 9) return 0;
     return -1;
 }
 
-char rowWins(void) {
+char row_wins(void) {
     for ( int i = 0; i < 3; i++ ) {
         int xCount = 0;
         int oCount = 0;
@@ -380,7 +545,7 @@ char rowWins(void) {
     return 0;
 }
 
-char colWins() {
+char col_wins() {
     for ( int i = 0; i < 3; i++ ) {
         int xCount = 0;
         int oCount = 0;
@@ -404,7 +569,7 @@ char colWins() {
 
 }
 
-char diagWins() {
+char diag_wins() {
     if ( board[0][0] == 1 && board[1][1] == 1 && board[2][2] == 1 ) {
         winpath[0] = 0;
         winpath[1] = 0;
@@ -693,4 +858,33 @@ void zero(void) {
     pause(3 * INTERVAL_CHARS);
 
     pause(1 * INTERVAL_LINE);
+}
+
+void show_strategies(void) {
+    int i = 0;
+    int pause = 100;
+    int delta = 1;
+    int pagesize = 10;
+    int row = 0;
+    while (strategies[i] != NULL) {
+        if (i % pagesize == 0) {
+            vti_clear_screen();
+            vti_print_at( 3, 2, "STRATEGY:");
+            vti_print_at(40, 2, "WINNER:");
+            row = 4;
+            if (i == 0) msleep(1000);
+        }
+        vti_print_at( 3, row, strategies[i]);
+        if (i <= 1) msleep(600); else
+            if (pause > 0) { msleep(pause); if (pause >= delta) pause -= delta; } else msleep(10);
+        vti_print_at(43, row, "NONE");
+        if (i == 0) msleep(600); else
+            if (pause > 0) { msleep(pause); if (pause >= delta) pause -= delta; } else msleep(10);
+
+        ++row;
+
+        ++i;
+    }
+    msleep(1000);
+    vti_clear_screen();
 }
