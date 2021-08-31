@@ -55,7 +55,7 @@ The parameter **mode** represents the way the dot is drawn, and can have the fol
 * vti_setmode(*\<mode\>*)
 * vti_print_at(*\<x\>*, *\<y\>*, *"string"*)
 * vti_clear_screen()
-* vti_fill_screen(*\<char\>*);
+* vti_fill_screen(*\<char\>*)
 * vti_save_screen()
 * vti_restore_screen()
 * vti_rawchar_at(*\<x\>*, *\<y\>*, *\<char\>*)
