@@ -42,6 +42,12 @@ void pause(long);
 void slow_print(char, char, char *);
 void zero(void);
 void show_strategies(void);
+void init_say();
+void say(char *);
+void draw_usa_ussr(void);
+void beep(void);
+
+char *stty = 0x0003;
 
 unsigned int seed;
 
@@ -63,6 +69,7 @@ char matches;
 long interval;
 char num_of_matches;
 char final_border;
+char speech;
 
 char screen_buffer[1024];
 
@@ -73,6 +80,7 @@ char screen_buffer[1024];
 #define INTERVAL_LINE    3000L
 
 #define FINAL_BORDER 0
+#define SPEECH 1
 #define NUM_OF_MATCHES 10
 
 char *strategies[] = {
@@ -261,6 +269,12 @@ void main(int argc, char *argv[]) {
         final_border = (char) atoi(argv[3]);
     }
 
+    speech = SPEECH;
+    if (argc >= 5) {
+        speech = (char) atoi(argv[4]);
+    }
+
+    printf("\032");
     for(;;) {
         players_number = intro_screen();
         interval = INTERVAL_INIT;
@@ -353,8 +367,10 @@ void main(int argc, char *argv[]) {
             vti_fill_screen(0);
             pause(800);
             vti_clear_screen();
+            beep();
             pause(INTERVAL_LINE);
             pause(INTERVAL_LINE);
+            draw_usa_ussr();
             show_strategies();
             if (final_border) {
                 vti_box(0, 0, 127, 47);
@@ -362,14 +378,21 @@ void main(int argc, char *argv[]) {
             }
             pause(INTERVAL_LINE);
             pause(INTERVAL_LINE);
+            printf("\032");
+            init_say();
+            say("Greetings professor Falken");
             slow_print(3, 2, "GREETINGS PROFESSOR FALKEN");
             pause(INTERVAL_LINE);
             slow_print(3, 4, "HELLO");
             pause(INTERVAL_LINE);
+            say("A strange game.");
             slow_print(3, 6, "A STRANGE GAME.");
+            say("The only winning move is");
             slow_print(3, 7, "THE ONLY WINNING MOVE IS");
+            say("Not to play.");
             slow_print(3, 8, "NOT TO PLAY.");
             pause(INTERVAL_LINE);
+            say("How about a nice game of chess?");
             slow_print(3, 10, "HOW ABOUT A NICE GAME OF CHESS?");
             get_key();
         }
@@ -898,4 +921,53 @@ void show_strategies(void) {
     }
     msleep(1000);
     vti_clear_screen();
+}
+
+void init_say() {
+    if (!speech) return;
+    *stty = 3;
+    printf("%s\n", "@=2 @w2 @f7 @r2");
+    *stty = 1;
+}
+
+void say(char *msg) {
+    if (!speech) return;
+    *stty = 3;
+    printf("%s\n", msg);
+    *stty = 1;
+}
+
+void beep() {
+    if (!speech) return;
+    printf("\007");
+}
+
+void draw_usa_ussr() {
+    printf("%s",
+        "\032"
+        "          ,------~~v,__   _____                     ____--^\\\n"
+        "         /             \\,/     /           ,,   ,,/^      Z  vZv-__\n"
+        "         |                    /            |'~^Z                   Z\\\n"
+        "         \\                   |           _/                     _  /^\n"
+        "          \\                 /           /                   ,~~^/|ZZ\n"
+        "           ^Z~_            /            |          __,,  v__\\   \\/\n"
+        "               '~~,  ,Z~Z\\ \\             ^~       /    ~Z  //\n"
+        "                   \\/     \\/               \\~,  ,/         Z\n"
+        "                                              ~~\n"                         
+        "            UNITED STATES                     SOVIET UNION\n"
+        "\n"
+        "  TRAJECTORY HEADING TRAJECTORY HEADING TRAJECTORY HEADING TRAJECTORY HEADING\n"
+        "  ------------------ ------------------ ------------------ ------------------\n"
+        "  A-SS20-A 929 523   C-SS20-A 984 675   E-SS20-A 398 984   G-SS20-A 919 437\n"
+        "         B 664 295          B 892 754          B 982 762          B 132 147\n"
+        "         C 125 386          C 374 256          C 276 674          C 050 195\n"
+        "         D 496 374          D 826 684          D 251 953          D 135 404\n"
+        "         E 987 384          E 873 543          E 352 601          E 461 284\n"
+        "\n"
+        "  B-SS20-A 495 896   D-SS20-A 365 590   F-SS20-A 574 651   H-SS20-A 959 913\n"
+        "         B 490 485          B 778 974          B 230 953          B 135 728\n"
+        "         C 875 273          C 210 852          C 321 615          C 952 464\n"
+        "         D 239 385          D 861 557          D 065 481          D 281 366\n"
+        "         E 978 253          E 862 007          E 153 249          E 684 420"
+    );
 }
