@@ -24,8 +24,6 @@ unsigned char vti_mod[48] = {
   2, 0, 1, 2
 };
 
-char vti_screen_buffer[VTI_WIDTH * VTI_HEIGHT];
-
 int vti_abs(int x);
 
 int vti_abs(int x) {
@@ -408,12 +406,12 @@ void vti_put_shape(unsigned int x, unsigned int y, char *shape, unsigned int w, 
     vti_setmode(old_mode);
 }
 
-void vti_save_screen(void) {
-    memcpy(vti_screen_buffer, vti_start, VTI_WIDTH * VTI_HEIGHT);
+void vti_save_screen(char *buf) {
+    memcpy(buf, vti_start, VTI_WIDTH * VTI_HEIGHT);
 }
 
-void vti_restore_screen(void) {
-    memcpy(vti_start, vti_screen_buffer, VTI_WIDTH * VTI_HEIGHT);
+void vti_restore_screen(char *buf) {
+    memcpy(vti_start, buf, VTI_WIDTH * VTI_HEIGHT);
 }
 
 void vti_fill_screen(char c) {

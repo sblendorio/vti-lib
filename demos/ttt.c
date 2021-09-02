@@ -64,6 +64,8 @@ long interval;
 char num_of_matches;
 char final_border;
 
+char screen_buffer[1024];
+
 #define INTERVAL_INIT    500L
 #define INTERVAL_DELTA   100L
 #define INTERVAL_MESSAGE 800L
@@ -290,11 +292,11 @@ void main(int argc, char *argv[]) {
                     movey = next_move[1];
                     invert_board();
                 } else if (players_number == 0 && current_player == 1 && total_moves == 0) {
-                    if (players_number == 0) pause(interval);
+                    pause(interval);
                     movex = abs(rand()) % 3;
                     movey = abs(rand()) % 3;
                 } else if (players_number == 0 && current_player == 1 && total_moves != 0) {
-                    if (players_number == 0) pause(interval);
+                    pause(interval);
                     player_to_move = current_player;
                     get_computer_move();
                     movex = next_move[0];
@@ -335,21 +337,21 @@ void main(int argc, char *argv[]) {
             } else {
                 interval -= INTERVAL_DELTA;
                 if (interval < 0) interval = 0;
-                vti_setmode(VTI_MODE_SET);
+                // vti_setmode(VTI_MODE_SET);
                 // vti_box(99, 19, 127, 25);
                 pause(INTERVAL_MESSAGE);
             }
         }
         if (players_number == 0) {
-            vti_save_screen();
+            vti_save_screen(screen_buffer);
             for (t=0; t<20; ++t) {
                 vti_clear_screen();
                 pause(100);
-                vti_restore_screen();
+                vti_restore_screen(screen_buffer);
                 pause(100);
             }
             vti_fill_screen(0);
-            pause(700);
+            pause(800);
             vti_clear_screen();
             pause(INTERVAL_LINE);
             pause(INTERVAL_LINE);

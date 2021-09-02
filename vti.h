@@ -33,8 +33,8 @@ unsigned char vti_read_char(unsigned int x, unsigned int y);
 void vti_scroll_up(unsigned int n);
 void vti_scroll_down(unsigned int n);
 void vti_put_shape(unsigned int x, unsigned int y, char *shape, unsigned int w, unsigned int h);
-void vti_save_screen(void);
-void vti_restore_screen(void);
+void vti_save_screen(char *);
+void vti_restore_screen(char *);
 
 // VTI keyboard functions
 void vti_set_keyboard_port(unsigned int port);
