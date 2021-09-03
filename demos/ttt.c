@@ -997,9 +997,9 @@ void draw_statistics() {
         "     89%                 HOSPITALS                       91%\n"
         "\n"
         "\n"
-        " UNITED STATES            HUMAN RESOURCES            SOVIET UNION\n"
+        " UNITED STATES           HUMAN RESOURCES             SOVIET UNION\n"
         "-----------------------------------------------------------------------------\n"
-        "49 MILLION               NON-FATAL INJURED         51 MILLION\n"
-        "72 MILLION               POPULATION DEATHS         75 MILLION "
+        " 49 MILLION              NON-FATAL INJURED           51 MILLION\n"
+        " 72 MILLION              POPULATION DEATHS           75 MILLION "
     );
 }
