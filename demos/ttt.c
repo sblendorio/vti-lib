@@ -979,7 +979,7 @@ void draw_statistics() {
         "\n\032"
         " UNITED STATES                                       SOVIET UNION\n"
         "UNITS DESTROYED          MILITARY ASSETS           UNITS DESTROYED\n"
-        "_____________________________________________________________________________\n"
+        "-----------------------------------------------------------------------------\n"
         "     60%                 BOMBERS                         48%\n"
         "     54%                 ICBM                            51%\n"
         "     12%                 ATTACK SUBS                     23%\n"
@@ -989,7 +989,7 @@ void draw_statistics() {
         "\n"
         " UNITED STATES                                       SOVIET UNION\n"
         "UNITS DESTROYED          CIVILIAN ASSETS           UNITS DESTROYED\n"
-        "_____________________________________________________________________________\n"
+        "-----------------------------------------------------------------------------\n"
         "     60%                 HOUSING                         56%\n"
         "     22%                 COMMUNICATIONS                  37%\n"
         "     45%                 TRANSPORTATION                  41%\n"
@@ -998,8 +998,8 @@ void draw_statistics() {
         "\n"
         "\n"
         " UNITED STATES            HUMAN RESOURCES            SOVIET UNION\n"
-        "_____________________________________________________________________________\n"
+        "-----------------------------------------------------------------------------\n"
         "49 MILLION               NON-FATAL INJURED         51 MILLION\n"
-        "72 MILLION               POPULATION DEATHS         75 MILLION"
+        "72 MILLION               POPULATION DEATHS         75 MILLION "
     );
 }
