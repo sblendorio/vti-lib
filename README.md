@@ -106,3 +106,6 @@ Thanks to:
 - [**Andrea Matteucci**](https://www.facebook.com/andrewmattew81/) for hardware providing and fixing
 - [**Antonino Porcino**](https://github.com/nippur72) for a lot of code optimizazions and demos **lenna**, **fonts**
 - **Brian W. Howell** for Tic-Tac-Toe's AI logic
+- [**Andy Glenn**](https://github.com/zompiexx/wargames/blob/main/wargames.bas) for "reverse engineering" of some WarGames screenshots
+- [**Paul Smith**](https://gist.github.com/paulsmith/ca3635527bf36e3bf5a8cb1e622abfee) for list of WOPR nuclear war scenarios
+- [**George Philips**](http://48k.ca/wgascii.html) for ASCII-art drawing of USA and USSR resembling WarGames' scene

@@ -46,6 +46,7 @@ void init_say();
 void say(char *);
 void draw_usa_ussr(void);
 void beep(void);
+void draw_statistics(void);
 
 char *stty = 0x0003;
 
@@ -281,6 +282,7 @@ void main(int argc, char *argv[]) {
 
         if (players_number == 0) {
             zero();
+            draw_statistics();
         }
 
         for (matches=0; (players_number == 0 & matches < num_of_matches) || (players_number != 0 && matches < 1); ++matches) {
@@ -969,5 +971,35 @@ void draw_usa_ussr() {
         "         C 875 273          C 210 852          C 321 615          C 952 464\n"
         "         D 239 385          D 861 557          D 065 481          D 281 366\n"
         "         E 978 253          E 862 007          E 153 249          E 684 420"
+    );
+}
+
+void draw_statistics() {
+    printf("%s",
+        "\n\032"
+        " UNITED STATES                                       SOVIET UNION\n"
+        "UNITS DESTROYED          MILITARY ASSETS           UNITS DESTROYED\n"
+        "_____________________________________________________________________________\n"
+        "     60%                 BOMBERS                         48%\n"
+        "     54%                 ICBM                            51%\n"
+        "     12%                 ATTACK SUBS                     23%\n"
+        "     39%                 TACTICAL AIRCRAFT               46%\n"
+        "     50%                 GROUND FORCES                   52%\n"
+        "\n"
+        "\n"
+        " UNITED STATES                                       SOVIET UNION\n"
+        "UNITS DESTROYED          CIVILIAN ASSETS           UNITS DESTROYED\n"
+        "_____________________________________________________________________________\n"
+        "     60%                 HOUSING                         56%\n"
+        "     22%                 COMMUNICATIONS                  37%\n"
+        "     45%                 TRANSPORTATION                  41%\n"
+        "     70%                 FOOD STOCKPILES                 82%\n"
+        "     89%                 HOSPITALS                       91%\n"
+        "\n"
+        "\n"
+        " UNITED STATES            HUMAN RESOURCES            SOVIET UNION\n"
+        "_____________________________________________________________________________\n"
+        "49 MILLION               NON-FATAL INJURED         51 MILLION\n"
+        "72 MILLION               POPULATION DEATHS         75 MILLION"
     );
 }
