@@ -833,3 +833,36 @@ void main(int argc, char *argv[]) {
    get_key();
 }
 
+/*
+
+WORKFLOW PER CONVERTIRE UN'IMMAGINE IN FORMATO VTI
+==================================================
+
+1) aprire l'immagine con PhotoShop
+
+2) opzionale: applicare una maschera di contrasto in modo da comprimere
+   la gamma dinamica dell'immagine
+
+3) ritagliare la porzione interessata con un aspect ratio di circa 4:3,
+   cercando di zoomare il più possibile sui dettagli
+
+4) ridimensionare l'immagine a 128x48 pixel
+
+5) Selezionare "Metodo" -> "Scala di colore" e scegliere il dithering in bianco e nero
+
+6) provare vari valori di % dithering cercando la resa migliore
+
+7) salvare in formato RAW, si deve ottenere un file di 6144 bytes (128x48)
+
+8) convertire il file immagine RAW in codice con l'utility bin2js.js
+
+9) includere nel sorgente
+
+10) eseguire lenna.com
+
+11) dall'emulatore, catturare la memoria schermo con dumpMem(0xc000,c3ff,64)
+
+12) incollare nel sorgente
+
+*/
+
