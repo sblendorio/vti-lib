@@ -22,17 +22,17 @@ Here is sort of "hello world":
       vti_set_start(0xf800); // optional since 0xf800 is the default
       vti_clear_screen();
       
-      vti_setmode(1);            // "1" (or VTI_MODE_SET) means "draw"
-      vti_line(0, 0, 120, 45);   // segment with coords (0,0)-(120,45).
+      vti_setmode(VTI_MODE_SET);    // "1" (or VTI_MODE_SET) means "draw"
+      vti_line(0, 0, 120, 45);      // segment with coords (0,0)-(120,45).
       
-      vti_setmode(1);            // "1" (or VTI_MODE_SET) means "draw"
-      vti_boxfill(2, 3, 25, 25); // box filled with edges (2,3) and (25, 25).
+      vti_setmode(VTI_MODE_SET);    // "1" (or VTI_MODE_SET) means "draw"
+      vti_boxfill(2, 3, 25, 25);    // box filled with edges (2,3) and (25, 25).
       
-      vti_setmode(0);            // "0" (or VTI_MODE_RESET) means "erase"
-      vti_boxfill(3, 4, 25, 25); // as above, but "0" means "erase"
+      vti_setmode(VTI_MODE_RESET);  // "0" (or VTI_MODE_RESET) means "erase"
+      vti_boxfill(3, 4, 25, 25);    // as above, but "0" means "erase"
       
-      vti_setmode(2);            // "2" (or VTI_MODE_INVERT) means "XOR" for each pixel
-      vti_boxfill(1, 1, 10, 10); // box filled with edges (1,1)-(10,10). 
+      vti_setmode(VTI_MODE_INVERT); // "2" (or VTI_MODE_INVERT) means "XOR" for each pixel
+      vti_boxfill(1, 1, 10, 10);    // box filled with edges (1,1)-(10,10). 
     }
 
 ## Function **vti_plot** and "mode" parameter
@@ -56,8 +56,8 @@ The parameter **mode** represents the way the dot is drawn, and can have the fol
 * vti_print_at(*\<x\>*, *\<y\>*, *"string"*)
 * vti_clear_screen()
 * vti_fill_screen(*\<char\>*)
-* vti_save_screen()
-* vti_restore_screen()
+* vti_save_screen(*\<buffer address\>*)
+* vti_restore_screen(*\<buffer address\>*)
 * vti_rawchar_at(*\<x\>*, *\<y\>*, *\<char\>*)
 * vti_plot(*\<x\>*, *\<y\>*)
 * vti_line(*\<x0\>*, *\<y0\>*, *\<x1\>*, *\<y1\>*)
