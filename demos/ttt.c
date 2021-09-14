@@ -47,6 +47,8 @@ void say(char *);
 void draw_usa_ussr(void);
 void beep(void);
 void draw_statistics(void);
+void credits(void);
+char pausekey(int);
 
 char *stty = 0x0003;
 
@@ -413,11 +415,14 @@ void main(int argc, char *argv[]) {
             say("Not to play.");
             slow_print(3, 8, "NOT TO PLAY.");
             pause(INTERVAL_LINE);
-            say("How about a nice game of chess?");
+            say("How about a nice game @f9 of chess?");
             slow_print(3, 10, "HOW ABOUT A NICE GAME OF CHESS?");
-            get_key();
+            pausekey(5);
             memcpy(vti_start, bitmap, 1024);
-            get_key();
+            pausekey(5);
+            credits();
+            pausekey(5);
+            for (t=0; t<24; ++t) printf("\n");
         }
     }
 }
@@ -428,24 +433,35 @@ char intro_screen(void) {
     ch = ' ';
     vti_clear_screen();
     vti_setmode(VTI_MODE_SET);
-    vti_box(0, 0, 127, 47);
-    vti_box(1, 0, 1,   47);
-    vti_box(126,0, 126,47);
-    vti_center_at(1, "Professor Falken's TIC-TAC-TOE for IMSAI 8080");
-    vti_center_at(2, "---------------------------------------------");
-    vti_center_at(3, "How many players?");
-    vti_center_at(12, "PRESS \".\" TO EXIT");
-    vti_center_at(14, "(C) Francesco Sblendorio 2021");
-    vti_line(56, 14, 56, 33);
-    vti_line(57, 14, 57, 33);
+    vti_put_shape(6, 0,
+    "******  ******                                ******                                                          "
+    "                                                                                                              "
+    "******  ******    ****      **********      ****            ****        **      **    ******        ********  "
+    "                                                                                                              "
+    "  **      **      ****        **    **      **              ****        ****  ****    **            **        "
+    "                                                                                                              "
+    "  **  **  **    **    **      ********      **  ******    **    **      **********    ********      **********"
+    "                                                                                                              "
+    "  **  **  **    ********      **  **        **    ****    ********      **  **  **    **                    **"
+    "                                                                                                              "
+    "    **  **    ****    ****    **  ******  ****    ****  ****    ****  ****      **  ****          ****      **"
+    "                                                                                                              "
+    "    **  **    ****    ****    **    ****  ************  ****    ****  ****      **  ************  ************",
+        110,13);
+
+
+    vti_center_at(5, "How many players? (\".\" to exit)");
+    vti_center_at(15, "(C) Francesco Sblendorio 2021");
+    vti_line(56, 14+7, 56, 33+7);
+    vti_line(57, 14+7, 57, 33+7);
     
-    vti_line(68, 14, 68, 33);
-    vti_line(69, 14, 69, 33);
+    vti_line(68, 14+7, 68, 33+7);
+    vti_line(69, 14+7, 69, 33+7);
 
-    vti_line(46, 20, 79, 20);
-    vti_line(46, 27, 79, 27);
+    vti_line(46, 20+7, 79, 20+7);
+    vti_line(46, 27+7, 79, 27+7);
 
-    vti_put_shape(50, 14,
+    vti_put_shape(50, 14+7,
         ".*."
         "**."
         ".*."
@@ -454,23 +470,36 @@ char intro_screen(void) {
         3, 5
     );
 
-    vti_put_shape(60, 22,
+    vti_put_shape(60, 22+7,
         ".****."
         "*....*"
         "*....*"
         ".****.",
         6, 4);
 
-    vti_put_shape(72, 29,
+    vti_put_shape(72, 29+7,
         ".***."
         "*...*"
         "..**."
         ".*..."
         "*****",
         5, 5);
+        
+/*
+    vti_put_shape(0, 0,
+        "*** ***                ***                             "
+        "*** ***  **   *****   **      **    *   *  ***    **** "
+        " *   *   **    *  *   *       **    ** **  *      *    "
+        " * * *  *  *   ****   * ***  *  *   *****  ****   *****"
+        " * * *  ****   * *    *  **  ****   * * *  *          *"
+        "  * *  **  **  * *** **  ** **  ** **   * **     **   *"
+        "  * *  **  **  *  ** ****** **  ** **   * ****** ******",
+        55,7);
+    */
     
     do {
-        ch = get_key();
+        ch = pausekey(8);
+        if (ch == 0) ch = '0';
     } while (ch != '0' && ch != '1' && ch != '2' && ch != '.');
     if (ch == '.') {
         vti_clear_screen();
@@ -933,7 +962,7 @@ void show_strategies(void) {
         if (i <= 1) msleep(600); else
             if (pause > 0) { msleep(pause); if (pause >= delta) pause -= delta; } else msleep(10);
         vti_print_at(43, row, "NONE");
-        if (i == 0) msleep(600); else
+        if (i <= 1) msleep(600); else
             if (pause > 0) { msleep(pause); if (pause >= delta) pause -= delta; } else msleep(10);
 
         ++row;
@@ -965,7 +994,7 @@ void beep() {
 
 void draw_usa_ussr() {
     printf("%s",
-        "\032"
+        "\n\032"
         "          ,------~~v,__   _____                     ____--^\\\n"
         "         /             \\,/     /           ,,   ,,/^      Z  vZv-__\n"
         "         |                    /            |'~^Z                   Z\\\n"
@@ -1021,4 +1050,89 @@ void draw_statistics() {
         " 49 MILLION              NON-FATAL INJURED           51 MILLION\n"
         " 72 MILLION              POPULATION DEATHS           75 MILLION "
     );
+}
+
+char pausekey(int secs) {
+    int t;
+    char ch;
+    while (getk()) ++seed;
+    for (t=0; t < (secs*100); ++t) {
+        ch = getk();
+        if (ch) return ch;
+        msleep(10);
+    }
+    return 0;
+}
+
+void credits() {
+   static char strbuf[80];
+   vti_clear_screen();
+   vti_center_at(4, "FINAL GOAL HAS NOT BEEN YET REACHED");
+   vti_center_at(5, "THE SOLUTION IS NEAR");
+   sleep(1);
+   vti_center_at(9, "GAME TIME ELAPSED                       ESTIMATED TIME REMAINING");
+   for (char i = 0; i < 5; i++) {
+      sprintf(strbuf, "31 HRS  12 MIN  %d SEC                    52 HRS 17  MIN  %d SEC", 50-i, 25-i);
+      vti_center_at(10, strbuf);
+      putchar(0x07);
+      sleep(1);
+   }
+   vti_clear_screen();
+   sleep(1);
+   
+   static char *titles[] = {
+   //  0123456789012345678901234567890123456789012345678901234567890123
+      "                      THANKS FOR WATCHING",
+      "",
+      "                  THIS DEMO WAS BROUGHT YOU BY",
+      "",
+      "",
+      "                          RETROCAMPUS",
+      "                          -----------",
+      "",
+      "              ANDREA MATTEUCCI   HARDWARE PROVIDING AND FIX",
+      "              STEFANO PAGANINI   HARDWARE CONSULTING",
+      "            CLAUDIO PARMIGIANI   HARDWARE FIXING",
+      "              ANTONINO PORCINO   INTEL 8080 OPTIMIZATIONS",
+      "          FRANCESCO SBLENDORIO   VTI LIB AND DEMO PROGRAMMING",
+      "",
+      "",
+      "",
+      "                          GUEST STARS",
+      "                          -----------",
+      "",
+      "                    IMSAI 8080   JOSHUA",
+      "                         Z88DK   C CROSS COMPILER",
+      "                  SOVIET UNION   PLAYER ONE",
+      "                 UNITED STATES   PLAYER TWO",
+      "",
+      "",
+      "",
+      "",
+      "               A TRIBUTE TO WARGAMES. GREETINGS TO:",
+      "               ------------------------------------",
+      "",
+      "                           JOHN BADHAM",
+      "                        MATTHEW BRODERICK",
+      "                           ALLY SHEEDY",
+      "                           JOHN WOOD",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "                         SEE YOU SOON!",
+   NULL
+   };
+   static int i;
+
+   for (i=0; titles[i] != NULL; ++i) {
+      vti_print_at(0, 15, titles[i]);
+      msleep(200);
+      vti_scroll_up(1);
+   }
+   for (i=0; i<16; ++i) {
+      msleep(200);
+      vti_scroll_up(1);
+   }
 }
