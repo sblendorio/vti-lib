@@ -415,7 +415,7 @@ void main(int argc, char *argv[]) {
             say("Not to play.");
             slow_print(3, 8, "NOT TO PLAY.");
             pause(INTERVAL_LINE);
-            say("How about a nice game @f9 of chess?");
+            say("How about a nice game \r\n @f9 of chess?");
             slow_print(3, 10, "HOW ABOUT A NICE GAME OF CHESS?");
             pausekey(5);
             memcpy(vti_start, bitmap, 1024);
