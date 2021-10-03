@@ -1,3 +1,5 @@
+<img src="imsai8080.jpg" width="800" alt="IMSAI 8080" />
+
 # VTI Lib
 
 C library (for **Z88DK**) for VTI graphics board for S100 computers (IMSAI, Altair, Poly88,...). Made for CP/M projects.
