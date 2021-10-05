@@ -88,13 +88,13 @@ This will make the demo use $E800 (59392) as start address for the graphics card
 
 There are the following demos (launch each of them eventually with the start address as parameter):
 
-* **demo.com**: a bunch of sample of most function available in the library
+* **ttt.com**: tic-tac-toe, inspired by [**War Games**](https://en.wikipedia.org/wiki/WarGames)
+* **demo.com**: a bunch of sample of most functions available in the library
 * **ball.com**: a *bouncing ball* across the screen
 * **pong.com**: the famous game, using a keyboard connected to the VTI's special slot
 * **bezier.com**: drawing of the G-clef, using bezier curves
 * **fonts.com**: draw text with big letters
 * **lenna.com**: drawing of the famous test image https://en.wikipedia.org/wiki/Lenna
-* **ttt.com**: tic-tac-toe, inspired by [**War Games**](https://en.wikipedia.org/wiki/WarGames)
 
 <img src="lenna-photo.jpg" width="500" alt="Lenna demo" />
 
